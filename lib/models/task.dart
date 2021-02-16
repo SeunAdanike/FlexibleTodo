@@ -4,6 +4,7 @@ class Task {
   int id;
   String title;
   String category;
+  String progressType;
   String description;
   String todoStartDate;
   String todoDueDate;
@@ -13,6 +14,7 @@ class Task {
     @required this.title,
     @required this.category,
     @required this.id,
+    @required this.progressType,
     @required this.description,
     @required this.todoStartDate,
     @required this.todoDueDate,
