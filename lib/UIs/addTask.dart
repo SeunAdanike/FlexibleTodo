@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
 class AddTask extends StatefulWidget {
   @override
@@ -19,6 +20,25 @@ class _AddTaskState extends State<AddTask> {
   bool isGradual = true;
 
   var _categoriesController;
+
+  DateTime _date = DateTime.now();
+  var _todoDate = TextEditingController();
+
+  _selectDueDate(BuildContext context) async {
+    var _pickedDate = await showDatePicker(
+      context: context,
+      initialDate: _date,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2099),
+    );
+    if (_pickedDate != null) {
+      setState(() {
+        _date = _pickedDate;
+        _todoDate.text = DateFormat('yyyy-MM-dd').format(_pickedDate);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
