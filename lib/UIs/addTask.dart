@@ -1,3 +1,4 @@
+import 'package:flexibletodo/UIs/allTask.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -194,6 +195,11 @@ class _AddTaskState extends State<AddTask> {
                       sizeProfile = 36;
                       sizeMenu = sizeAddTask = sizeHome = sizeSetting = 30;
                     });
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => AllTask(),
+                      ),
+                    );
                   },
                 ),
                 Text(

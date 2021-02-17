@@ -1,16 +1,16 @@
 import 'package:flutter/cupertino.dart';
 
 class Task {
-  int id;
-  String title;
-  String category;
-  String progressType;
-  String description;
-  String todoStartDate;
-  String todoDueDate;
-  List<String> measurables;
-  bool isFinished;
-  Task({
+  final int id;
+  final String title;
+  final String category;
+  final String progressType;
+  final String description;
+  final String todoStartDate;
+  final String todoDueDate;
+  final List<String> measurables;
+  final bool isFinished;
+  const Task({
     @required this.title,
     @required this.category,
     @required this.id,
@@ -21,18 +21,17 @@ class Task {
     this.measurables,
     @required this.isFinished,
   });
-  // taskMap() {
-  //   var map = Map<String, dynamic>();
-  //   map['id'] = id;
-  //   map['title'] = title;
-  //   map['description'] = description;
-  //   map['category'] = category;
-  //   map['todoStartDate'] = todoStartDate;
-  //   map['todoDueDate'] = todoDueDate;
-  //   map['isFinished'] = isFinished;
-  //   map['measurables'] = measurables;
-  //   return map;
-  // }
+  taskMap() {
+    var map = Map<String, dynamic>();
+    map['id'] = id;
+    map['title'] = title;
+    map['description'] = description;
+    map['category'] = category;
+    map['todoStartDate'] = todoStartDate;
+    map['todoDueDate'] = todoDueDate;
+    map['isFinished'] = isFinished;
+    map['measurables'] = measurables;
+    map['progressType'] = progressType;
+    return map;
+  }
 }
-
-//final Task first = Task(id: 1,category: 'Academics' );
