@@ -2,36 +2,41 @@ import 'package:flexibletodo/models/task.dart';
 
 const DUMMY_TASK = const [
   Task(
-      title: 'Research Work',
-      category: 'Academics',
-      progressType: 'Gradual',
-      todoDueDate: '21/04/05',
-      todoStartDate: '21/02/17',
-      description: 'I am to search for recent papers online',
-      isFinished: false,
-      id: 1,
-      measurables: [
-        'Download Endnote',
-        'Install Endnote',
-        'visit IEEE and scienceDirect',
-        'filter out the papers',
-      ]),
+    title: 'Research Work',
+    category: 'Academics',
+    progressType: 'Gradual',
+    todoDueDate: '21/04/05',
+    todoStartDate: '21/02/17',
+    description: 'I am to search for recent papers online',
+    isFinished: false,
+    id: 1,
+    measurables: {
+      'Download Endnote': false,
+      'Install Endnote': false,
+      'visit IEEE and scienceDirect': false,
+      'filter out the papers': false,
+    },
+    time: '12:00AM',
+  ),
   Task(
-      title: 'Publishing Paper',
-      category: 'Academics',
-      progressType: 'Gradual',
-      todoDueDate: '21/05/05',
-      todoStartDate: '21/02/17',
-      description: 'I am to publish my finished papers',
-      isFinished: true,
-      id: 2,
-      measurables: [
-        'Visit the publish site'
-            'Download Endnote',
-        'Filter out the unneccessary stuffs',
-        'visit IEEE and scienceDirect',
-        'filter out the papers',
-      ]),
+    title: 'Publishing Paper',
+    category: 'Academics',
+    progressType: 'Gradual',
+    todoDueDate: '21/05/05',
+    todoStartDate: '21/02/17',
+    description:
+        'I am to publish my finished papers and alot of thing that might no be necessary',
+    isFinished: true,
+    id: 2,
+    measurables: {
+      'Visit the publish site': true,
+      'Download Endnote': false,
+      'Filter out the unneccessary stuffs': false,
+      'visit IEEE and scienceDirect': false,
+      'filter out the papers': false,
+    },
+    time: '1:00AM',
+  ),
   Task(
     title: 'Map Work',
     category: 'Work',
@@ -41,6 +46,7 @@ const DUMMY_TASK = const [
     description: 'I am to put locations on the maps',
     isFinished: false,
     id: 3,
+    time: '12:00AM',
   ),
   Task(
     title: 'Cook Rice',
@@ -51,6 +57,7 @@ const DUMMY_TASK = const [
     description: 'I am to cook different types of soup',
     isFinished: false,
     id: 4,
+    time: '12:00AM',
   ),
   Task(
     title: 'Seive Rice Flour',
@@ -61,5 +68,6 @@ const DUMMY_TASK = const [
     description: 'I am to cook different types of soup',
     isFinished: false,
     id: 4,
+    time: '12:00AM',
   ),
 ];

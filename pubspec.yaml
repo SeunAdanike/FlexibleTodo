@@ -52,6 +52,7 @@ flutter:
     - assets/images/buddies.svg
     - assets/images/Foyeke.jpg
     - assets/images/Add task.svg
+    - assets/images/Details.svg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
@@ -64,17 +65,17 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  fonts:
-    - family: Ubuntu
-      fonts:
-        - asset: assets/fonts/Ubuntu-Bold.ttf
-        - asset: assets/fonts/Ubuntu-BoldItalic.ttf
-        - asset: assets/fonts/Ubuntu-Italic.ttf
-        - asset: assets/fonts/Ubuntu-Light.ttf
-        - asset: assets/fonts/Ubuntu-LightItalic.ttf
-        - asset: assets/fonts/Ubuntu-Medium.ttf
-        - asset: assets/fonts/Ubuntu-MediumItalic.ttf
-        - asset: assets/fonts/Ubuntu-Regular.ttf
+  # fonts:
+  #   - family: Ubuntu
+  #     fonts:
+  #       - asset: assets/fonts/Ubuntu-Bold.ttf
+  #       - asset: assets/fonts/Ubuntu-BoldItalic.ttf
+  #       - asset: assets/fonts/Ubuntu-Italic.ttf
+  #       - asset: assets/fonts/Ubuntu-Light.ttf
+  #       - asset: assets/fonts/Ubuntu-LightItalic.ttf
+  #       - asset: assets/fonts/Ubuntu-Medium.ttf
+  #       - asset: assets/fonts/Ubuntu-MediumItalic.ttf
+  #       - asset: assets/fonts/Ubuntu-Regular.ttf
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf

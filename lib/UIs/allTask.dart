@@ -1,3 +1,4 @@
+import 'package:flexibletodo/UIs/details.dart';
 import 'package:flexibletodo/models/dummyTask.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -259,13 +260,25 @@ class _AllTaskState extends State<AllTask> {
               ],
             ),
             Divider(),
-            Text(
-              'All Tasks',
-              style: GoogleFonts.ubuntu(
-                fontSize: 25,
-                color: Colors.white,
-                fontWeight: FontWeight.w500,
-              ),
+            Row(
+              children: [
+                Text(
+                  'All Tasks',
+                  style: GoogleFonts.ubuntu(
+                    fontSize: 25,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                Text(
+                  '(${DUMMY_TASK.length})',
+                  style: GoogleFonts.ubuntu(
+                    fontSize: 25,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
             ),
             Expanded(
               child: ListView.builder(
@@ -276,7 +289,12 @@ class _AllTaskState extends State<AllTask> {
                       bottom: 18.0,
                     ),
                     child: InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => TodoDetailsScreen(
+                                  task: DUMMY_TASK[index],
+                                )));
+                      },
                       child: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -364,7 +382,7 @@ class _AllTaskState extends State<AllTask> {
                                       ),
                                     ),
                                     Icon(
-                                      Icons.delete,
+                                      Icons.delete_outline,
                                       color: Colors.red,
                                     ),
                                   ]),

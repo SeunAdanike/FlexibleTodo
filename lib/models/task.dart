@@ -8,8 +8,9 @@ class Task {
   final String description;
   final String todoStartDate;
   final String todoDueDate;
-  final List<String> measurables;
+  final Map<String, bool> measurables;
   final bool isFinished;
+  final String time;
   const Task({
     @required this.title,
     @required this.category,
@@ -20,6 +21,7 @@ class Task {
     @required this.todoDueDate,
     this.measurables,
     @required this.isFinished,
+    @required this.time,
   });
   taskMap() {
     var map = Map<String, dynamic>();
@@ -32,6 +34,7 @@ class Task {
     map['isFinished'] = isFinished;
     map['measurables'] = measurables;
     map['progressType'] = progressType;
+    map['finishedTime'] = time;
     return map;
   }
 }
