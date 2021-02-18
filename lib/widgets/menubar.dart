@@ -1,3 +1,4 @@
+import 'package:flexibletodo/UIs/addTask.dart';
 import 'package:flexibletodo/UIs/allTask.dart';
 import 'package:flexibletodo/UIs/dashboard.dart';
 import 'package:flexibletodo/UIs/settings.dart';
@@ -121,6 +122,11 @@ class _MenuBarState extends State<MenuBar> {
                     sizeAddTask = 36;
                     sizeMenu = sizeHome = sizeProfile = sizeSetting = 30;
                   });
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => AddTask(),
+                    ),
+                  );
                 },
               ),
               Text(
