@@ -1,3 +1,4 @@
+import 'package:flexibletodo/widgets/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -9,7 +10,7 @@ class Dash extends StatefulWidget {
 class _DashState extends State<Dash> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Scaffold(   drawer: AppDrawer(),
       backgroundColor: Theme.of(context).primaryColor,
       body: Padding(
         padding: const EdgeInsets.only(

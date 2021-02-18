@@ -1,4 +1,5 @@
 
+import 'package:flexibletodo/widgets/drawer.dart';
 import 'package:flexibletodo/widgets/menubar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -66,7 +67,7 @@ class _AddTaskState extends State<AddTask> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Scaffold(   drawer: AppDrawer(),
       extendBody: true,
       bottomNavigationBar: MenuBar(),
       backgroundColor: Theme.of(context).primaryColor,

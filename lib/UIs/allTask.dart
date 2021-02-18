@@ -1,5 +1,6 @@
 import 'package:flexibletodo/UIs/details.dart';
 import 'package:flexibletodo/models/dummyTask.dart';
+import 'package:flexibletodo/widgets/drawer.dart';
 import 'package:flexibletodo/widgets/menubar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -13,7 +14,7 @@ class _AllTaskState extends State<AllTask> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Scaffold(   drawer: AppDrawer(),
       extendBody: true,
       bottomNavigationBar: MenuBar(),
       backgroundColor: Theme.of(context).primaryColor,

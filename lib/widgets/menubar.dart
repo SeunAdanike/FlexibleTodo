@@ -1,4 +1,5 @@
 import 'package:flexibletodo/UIs/allTask.dart';
+import 'package:flexibletodo/UIs/dashboard.dart';
 import 'package:flexibletodo/UIs/settings.dart';
 import 'package:flexibletodo/widgets/drawer.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +28,10 @@ class _MenuBarState extends State<MenuBar> {
         color: Color(0xFFD2CECE),
       ),
       child: Padding(
-        padding: const EdgeInsets.only(top: 1, bottom: 3),
+        padding: const EdgeInsets.only(
+          top: 1,
+          bottom: 3,
+        ),
         child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
           Column(
             mainAxisSize: MainAxisSize.min,
@@ -46,12 +50,8 @@ class _MenuBarState extends State<MenuBar> {
                     isHome = isAddTask = isProfile = isSettings = false;
                     sizeMenu = 36;
                     sizeHome = sizeAddTask = sizeProfile = sizeSetting = 30;
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => AppDrawer(),
-                      ),
-                    );
                   });
+                  Scaffold.of(context).openDrawer();
                 },
               ),
               Text(
@@ -85,7 +85,7 @@ class _MenuBarState extends State<MenuBar> {
                     sizeMenu = sizeAddTask = sizeProfile = sizeSetting = 30;
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => AllTask(),
+                        builder: (context) => Dash(),
                       ),
                     );
                   });
