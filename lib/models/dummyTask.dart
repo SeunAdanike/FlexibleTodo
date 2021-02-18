@@ -11,8 +11,8 @@ const DUMMY_TASK = const [
     isFinished: false,
     id: 1,
     measurables: {
-      'Download Endnote': false,
-      'Install Endnote': false,
+      'Download Endnote': true,
+      'Install Endnote': true,
       'visit IEEE and scienceDirect': false,
       'filter out the papers': false,
     },
@@ -26,12 +26,12 @@ const DUMMY_TASK = const [
     todoStartDate: '21/02/17',
     description:
         'I am to publish my finished papers and alot of thing that might no be necessary',
-    isFinished: true,
+    isFinished: false,
     id: 2,
     measurables: {
       'Visit the publish site': true,
-      'Download Endnote': false,
-      'Filter out the unneccessary stuffs': false,
+      'Download Endnote': true,
+      'Filter out the unneccessary stuffs': true,
       'visit IEEE and scienceDirect': false,
       'filter out the papers': false,
     },
