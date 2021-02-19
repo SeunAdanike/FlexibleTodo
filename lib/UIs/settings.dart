@@ -16,7 +16,10 @@ class _SettingsState extends State<Settings> {
     return Scaffold(
       drawer: AppDrawer(),
       backgroundColor: Theme.of(context).primaryColor,
-      bottomNavigationBar: MenuBar(),
+      bottomNavigationBar: MenuBar(
+        isSettings: true,
+        sizeSetting: 36,
+      ),
       body: Stack(
         children: [
           EdgeDesign(),

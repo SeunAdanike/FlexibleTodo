@@ -8,6 +8,8 @@ class Task {
   final String description;
   final String todoStartDate;
   final String todoDueDate;
+  final String todoFinishedDate;
+
   final Map<String, bool> measurables;
   final bool isFinished;
   final String time;
@@ -19,6 +21,7 @@ class Task {
     @required this.description,
     @required this.todoStartDate,
     @required this.todoDueDate,
+    @required this.todoFinishedDate,
     this.measurables,
     @required this.isFinished,
     @required this.time,
@@ -31,6 +34,8 @@ class Task {
     map['category'] = category;
     map['todoStartDate'] = todoStartDate;
     map['todoDueDate'] = todoDueDate;
+    map['todoFinishedDate'] = todoDueDate;
+ 
     map['isFinished'] = isFinished;
     map['measurables'] = measurables;
     map['progressType'] = progressType;

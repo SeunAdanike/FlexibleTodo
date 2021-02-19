@@ -47,7 +47,10 @@ class _TodoDetailsScreenState extends State<TodoDetailsScreen> {
     return Scaffold(
       drawer: AppDrawer(),
       extendBody: true,
-      bottomNavigationBar: MenuBar(),
+      bottomNavigationBar: MenuBar(
+        isHome: true,
+        sizeHome: 36,
+      ),
       backgroundColor: Theme.of(context).primaryColor,
       body: Stack(
         children: [

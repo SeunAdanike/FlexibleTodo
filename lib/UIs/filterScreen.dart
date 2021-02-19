@@ -1,17 +1,46 @@
 import 'package:flexibletodo/UIs/details.dart';
 import 'package:flexibletodo/models/dummyTask.dart';
+import 'package:flexibletodo/models/task.dart';
 import 'package:flexibletodo/widgets/drawer.dart';
 import 'package:flexibletodo/widgets/edgeDesign.dart';
 import 'package:flexibletodo/widgets/menubar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class AllTask extends StatefulWidget {
+class FilterHelper extends StatefulWidget {
+  final String field;
+  FilterHelper({@required this.field});
   @override
-  _AllTaskState createState() => _AllTaskState();
+  _FilterHelperState createState() => _FilterHelperState();
 }
 
-class _AllTaskState extends State<AllTask> {
+class _FilterHelperState extends State<FilterHelper> {
+  List<Task> _alltask = List<Task>();
+  List<Task> _fetchedTask = List<Task>();
+  List<Task> _categoriesTask = List<Task>();
+
+  _placeGetter() {
+    _alltask = DUMMY_TASK.toList();
+    for (int i = 0; i < _alltask.length; i++) {
+      if (widget.field == 'Pending') {
+        if (!_alltask[i].isFinished) _fetchedTask.add(_alltask[i]);
+      }
+      if (widget.field == 'Completed') {
+        if (_alltask[i].isFinished) _fetchedTask.add(_alltask[i]);
+      }
+      if (_alltask[i].category == widget.field)
+        _fetchedTask.add(
+          _alltask[i],
+        );
+    }
+  }
+
+  @override
+  void initState() {
+    _placeGetter();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -89,7 +118,7 @@ class _AllTaskState extends State<AllTask> {
                 Row(
                   children: [
                     Text(
-                      'All Tasks',
+                      '${widget.field} Tasks',
                       style: GoogleFonts.ubuntu(
                         fontSize: 25,
                         color: Colors.white,
@@ -97,7 +126,7 @@ class _AllTaskState extends State<AllTask> {
                       ),
                     ),
                     Text(
-                      '(${DUMMY_TASK.length})',
+                      '(${_fetchedTask.length})',
                       style: GoogleFonts.ubuntu(
                         fontSize: 25,
                         color: Colors.white,
@@ -118,7 +147,7 @@ class _AllTaskState extends State<AllTask> {
                           onTap: () {
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) => TodoDetailsScreen(
-                                      task: DUMMY_TASK[index],
+                                      task: _fetchedTask[index],
                                     )));
                           },
                           child: Container(
@@ -146,7 +175,7 @@ class _AllTaskState extends State<AllTask> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            DUMMY_TASK[index].title,
+                                            _fetchedTask[index].title,
                                             style: GoogleFonts.ubuntu(
                                               fontSize: 20,
                                               fontWeight: FontWeight.w600,
@@ -156,7 +185,7 @@ class _AllTaskState extends State<AllTask> {
                                             height: 5,
                                           ),
                                           Text(
-                                            DUMMY_TASK[index].category,
+                                            _fetchedTask[index].category,
                                             style: GoogleFonts.ubuntu(
                                               fontSize: 16,
                                               fontWeight: FontWeight.w400,
@@ -169,7 +198,7 @@ class _AllTaskState extends State<AllTask> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            DUMMY_TASK[index].isFinished
+                                            _fetchedTask[index].isFinished
                                                 ? 'Done'
                                                 : 'Pending',
                                             style: GoogleFonts.ubuntu(
@@ -181,9 +210,9 @@ class _AllTaskState extends State<AllTask> {
                                             height: 6,
                                           ),
                                           Text(
-                                            DUMMY_TASK[index].isFinished
+                                            _fetchedTask[index].isFinished
                                                 ? 'Completed'
-                                                : 'Due on ${DUMMY_TASK[index].todoDueDate}',
+                                                : 'Due on ${_fetchedTask[index].todoDueDate}',
                                             style: GoogleFonts.ubuntu(
                                               fontSize: 16,
                                               fontWeight: FontWeight.w400,
@@ -235,7 +264,7 @@ class _AllTaskState extends State<AllTask> {
                         ),
                       );
                     },
-                    itemCount: DUMMY_TASK.length,
+                    itemCount: _fetchedTask.length,
                   ),
                 )
               ],

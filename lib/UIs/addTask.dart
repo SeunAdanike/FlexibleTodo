@@ -1,3 +1,4 @@
+import 'package:flexibletodo/models/categories.dart';
 import 'package:flexibletodo/widgets/drawer.dart';
 import 'package:flexibletodo/widgets/edgeDesign.dart';
 import 'package:flexibletodo/widgets/menubar.dart';
@@ -13,14 +14,6 @@ class AddTask extends StatefulWidget {
 }
 
 class _AddTaskState extends State<AddTask> {
-  final List<String> _categories = [
-    'Academics',
-    'Lifestyle',
-    'Family',
-    'Work',
-    'Spiritual',
-    'Business',
-  ];
   bool isGradual = true;
   var _categoriesController;
 
@@ -70,7 +63,10 @@ class _AddTaskState extends State<AddTask> {
     return Scaffold(
       drawer: AppDrawer(),
       extendBody: true,
-      bottomNavigationBar: MenuBar(),
+      bottomNavigationBar: MenuBar(
+        sizeAddTask: 36,
+        isAddTask: true,
+      ),
       backgroundColor: Theme.of(context).primaryColor,
       body: Stack(
         children: [
@@ -222,7 +218,7 @@ class _AddTaskState extends State<AddTask> {
                                         MediaQuery.of(context).size.width * 0.5,
                                     child: DropdownButtonFormField(
                                       value: _categoriesController,
-                                      items: _categories
+                                      items: CATEGORIES
                                           .map(
                                             (label) => DropdownMenuItem(
                                               child: Text(

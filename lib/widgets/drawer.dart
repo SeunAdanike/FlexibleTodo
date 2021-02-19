@@ -1,5 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flexibletodo/UIs/allTask.dart';
+import 'package:flexibletodo/UIs/categories.dart';
+import 'package:flexibletodo/UIs/filterScreen.dart';
+import 'package:flexibletodo/UIs/login.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -52,7 +55,13 @@ class AppDrawer extends StatelessWidget {
               color: Colors.white,
             ),
             ListTile(
-              onTap: () {},
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => Categories(),
+                  ),
+                );
+              },
               leading: Icon(
                 Icons.category_sharp,
                 color: Color(0xFF61F4E8),
@@ -80,7 +89,15 @@ class AppDrawer extends StatelessWidget {
               ),
             ),
             ListTile(
-              onTap: () {},
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => FilterHelper(
+                      field: 'Completed',
+                    ),
+                  ),
+                );
+              },
               leading: Icon(
                 Icons.check_circle_outline,
                 color: Color(0xFF61F4E8),
@@ -95,7 +112,15 @@ class AppDrawer extends StatelessWidget {
               ),
             ),
             ListTile(
-              onTap: () {},
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => FilterHelper(
+                      field: 'Pending',
+                    ),
+                  ),
+                );
+              },
               leading: Icon(
                 Icons.pending_actions_outlined,
                 color: Color(0xFF61F4E8),
@@ -131,7 +156,13 @@ class AppDrawer extends StatelessWidget {
               ),
             ),
             ListTile(
-              onTap: () {},
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => Login(),
+                  ),
+                );
+              },
               leading: Icon(
                 Icons.logout,
                 color: Color(0xFF61F4E8),

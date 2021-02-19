@@ -1,22 +1,28 @@
 import 'package:flexibletodo/UIs/addTask.dart';
-import 'package:flexibletodo/UIs/allTask.dart';
 import 'package:flexibletodo/UIs/dashboard.dart';
 import 'package:flexibletodo/UIs/settings.dart';
-import 'package:flexibletodo/widgets/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class MenuBar extends StatefulWidget {
+  double sizeMenu, sizeAddTask, sizeProfile, sizeSetting, sizeHome;
+  bool isMenu, isAddTask, isProfile, isSettings, isHome;
+  MenuBar(
+      {this.isMenu = false,
+      this.isAddTask = false,
+      this.isProfile = false,
+      this.isSettings = false,
+      this.isHome = false,
+      this.sizeMenu = 30,
+      this.sizeAddTask = 30,
+      this.sizeProfile = 30,
+      this.sizeSetting = 30,
+      this.sizeHome = 30});
   @override
   _MenuBarState createState() => _MenuBarState();
 }
 
 class _MenuBarState extends State<MenuBar> {
-  double sizeMenu = 30, sizeAddTask = 30, sizeProfile = 30, sizeSetting = 30;
-  double sizeHome = 36;
-  bool isMenu = false, isAddTask = false, isProfile = false, isSettings = false;
-  bool isHome = true;
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -40,27 +46,22 @@ class _MenuBarState extends State<MenuBar> {
               IconButton(
                 icon: Icon(
                   Icons.menu,
-                  size: sizeMenu,
-                  color: isMenu
+                  size: widget.sizeMenu,
+                  color: widget.isMenu
                       ? Theme.of(context).primaryColor
                       : Theme.of(context).primaryColorLight,
                 ),
                 onPressed: () {
-                  setState(() {
-                    isMenu = true;
-                    isHome = isAddTask = isProfile = isSettings = false;
-                    sizeMenu = 36;
-                    sizeHome = sizeAddTask = sizeProfile = sizeSetting = 30;
-                  });
                   Scaffold.of(context).openDrawer();
                 },
               ),
               Text(
                 'Menu',
                 style: GoogleFonts.ubuntu(
-                  fontWeight: isMenu ? FontWeight.bold : FontWeight.normal,
-                  fontSize: sizeMenu / 2,
-                  color: isMenu
+                  fontWeight:
+                      widget.isMenu ? FontWeight.bold : FontWeight.normal,
+                  fontSize: widget.sizeMenu / 2,
+                  color: widget.isMenu
                       ? Theme.of(context).primaryColor
                       : Theme.of(context).primaryColorLight,
                 ),
@@ -73,31 +74,26 @@ class _MenuBarState extends State<MenuBar> {
               IconButton(
                 icon: Icon(
                   Icons.home,
-                  size: sizeHome,
-                  color: isHome
+                  size: widget.sizeHome,
+                  color: widget.isHome
                       ? Theme.of(context).primaryColor
                       : Theme.of(context).primaryColorLight,
                 ),
                 onPressed: () {
-                  setState(() {
-                    isHome = true;
-                    isMenu = isAddTask = isProfile = isSettings = false;
-                    sizeHome = 36;
-                    sizeMenu = sizeAddTask = sizeProfile = sizeSetting = 30;
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => Dash(),
-                      ),
-                    );
-                  });
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => Dash(),
+                    ),
+                  );
                 },
               ),
               Text(
                 'Home',
                 style: GoogleFonts.ubuntu(
-                  fontSize: sizeHome / 2,
-                  fontWeight: isHome ? FontWeight.bold : FontWeight.normal,
-                  color: isHome
+                  fontSize: widget.sizeHome / 2,
+                  fontWeight:
+                      widget.isHome ? FontWeight.bold : FontWeight.normal,
+                  color: widget.isHome
                       ? Theme.of(context).primaryColor
                       : Theme.of(context).primaryColorLight,
                 ),
@@ -110,18 +106,12 @@ class _MenuBarState extends State<MenuBar> {
               IconButton(
                 icon: Icon(
                   Icons.add_box,
-                  size: sizeAddTask,
-                  color: isAddTask
+                  size: widget.sizeAddTask,
+                  color: widget.isAddTask
                       ? Theme.of(context).primaryColor
                       : Theme.of(context).primaryColorLight,
                 ),
                 onPressed: () {
-                  setState(() {
-                    isAddTask = true;
-                    isMenu = isHome = isProfile = isSettings = false;
-                    sizeAddTask = 36;
-                    sizeMenu = sizeHome = sizeProfile = sizeSetting = 30;
-                  });
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => AddTask(),
@@ -132,11 +122,12 @@ class _MenuBarState extends State<MenuBar> {
               Text(
                 'Add Task',
                 style: GoogleFonts.ubuntu(
-                  fontWeight: isAddTask ? FontWeight.bold : FontWeight.normal,
-                  color: isAddTask
+                  fontWeight:
+                      widget.isAddTask ? FontWeight.bold : FontWeight.normal,
+                  color: widget.isAddTask
                       ? Theme.of(context).primaryColor
                       : Theme.of(context).primaryColorLight,
-                  fontSize: sizeAddTask / 2,
+                  fontSize: widget.sizeAddTask / 2,
                 ),
               ),
             ],
@@ -147,28 +138,28 @@ class _MenuBarState extends State<MenuBar> {
               IconButton(
                 icon: Icon(
                   Icons.person,
-                  size: sizeProfile,
-                  color: isProfile
+                  size: widget.sizeProfile,
+                  color: widget.isProfile
                       ? Theme.of(context).primaryColor
                       : Theme.of(context).primaryColorLight,
                 ),
                 onPressed: () {
-                  setState(() {
-                    isProfile = true;
-                    isMenu = isHome = isAddTask = isSettings = false;
-                    sizeProfile = 36;
-                    sizeMenu = sizeAddTask = sizeHome = sizeSetting = 30;
-                  });
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => Settings(),
+                    ),
+                  );
                 },
               ),
               Text(
                 'Profile',
                 style: GoogleFonts.ubuntu(
-                  fontWeight: isProfile ? FontWeight.bold : FontWeight.normal,
-                  color: isProfile
+                  fontWeight:
+                      widget.isProfile ? FontWeight.bold : FontWeight.normal,
+                  color: widget.isProfile
                       ? Theme.of(context).primaryColor
                       : Theme.of(context).primaryColorLight,
-                  fontSize: sizeProfile / 2,
+                  fontSize: widget.sizeProfile / 2,
                 ),
               ),
             ],
@@ -179,33 +170,28 @@ class _MenuBarState extends State<MenuBar> {
               IconButton(
                 icon: Icon(
                   Icons.settings,
-                  size: sizeSetting,
-                  color: isSettings
+                  size: widget.sizeSetting,
+                  color: widget.isSettings
                       ? Theme.of(context).primaryColor
                       : Theme.of(context).primaryColorLight,
                 ),
                 onPressed: () {
-                  setState(() {
-                    isSettings = true;
-                    isMenu = isHome = isAddTask = isProfile = false;
-                    sizeSetting = 36;
-                    sizeMenu = sizeAddTask = sizeHome = sizeProfile = 30;
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => Settings(),
-                      ),
-                    );
-                  });
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => Settings(),
+                    ),
+                  );
                 },
               ),
               Text(
                 'Setting',
                 style: GoogleFonts.ubuntu(
-                  fontWeight: isSettings ? FontWeight.bold : FontWeight.normal,
-                  color: isSettings
+                  fontWeight:
+                      widget.isSettings ? FontWeight.bold : FontWeight.normal,
+                  color: widget.isSettings
                       ? Theme.of(context).primaryColor
                       : Theme.of(context).primaryColorLight,
-                  fontSize: sizeSetting / 2,
+                  fontSize: widget.sizeSetting / 2,
                 ),
               ),
             ],

@@ -8,6 +8,7 @@ import 'package:flexibletodo/widgets/edgeDesign.dart';
 import 'package:flexibletodo/widgets/menubar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class Dash extends StatefulWidget {
@@ -22,8 +23,13 @@ class _DashState extends State<Dash> {
   int _unDone;
   int _percentage = 0;
   List<Task> _dueToday = List<Task>();
+  String _enrolDate = '2021-02-10';
+
+  DateTime _todaysDate = DateTime.now();
 
   var _scrollController = ScrollController();
+
+  int _differenceInDate = 0;
 
   int _progressCalculator(Map<String, bool> measurables) {
     _unDone = 0;
@@ -40,8 +46,11 @@ class _DashState extends State<Dash> {
     _taskTitle = DUMMY_TASK.toList();
     for (int i = 0; i < _taskTitle.length; i++) {
       if (_taskTitle[i].isFinished == false) _pendingTask.add(_taskTitle[i]);
-      if (_taskTitle[i].todoDueDate == '21/04/05') _dueToday.add(_taskTitle[i]);
+      if (_taskTitle[i].todoDueDate == '2021-04-05')
+        _dueToday.add(_taskTitle[i]);
     }
+    DateTime _enrolDateConvert = DateTime.parse(_enrolDate);
+    _differenceInDate = _todaysDate.difference(_enrolDateConvert).inDays;
     super.initState();
   }
 
@@ -50,7 +59,10 @@ class _DashState extends State<Dash> {
     return Scaffold(
       extendBody: true,
       drawer: AppDrawer(),
-      bottomNavigationBar: MenuBar(),
+      bottomNavigationBar: MenuBar(
+        isHome: true,
+        sizeHome: 36,
+      ),
       backgroundColor: Theme.of(context).primaryColor,
       body: Stack(
         children: [
@@ -123,7 +135,7 @@ class _DashState extends State<Dash> {
                     thickness: 4,
                     radius: Radius.circular(15),
                     controller: _scrollController,
-                    isAlwaysShown: true,
+                    isAlwaysShown: false,
                     child: Padding(
                       padding: const EdgeInsets.only(
                         right: 8.0,
@@ -152,27 +164,95 @@ class _DashState extends State<Dash> {
                               child: ListView.builder(
                                 //shrinkWrap: true,
                                 itemBuilder: (context, index) {
+                                  int _finished = 0, _due = 0;
+                                  DateTime _barDate = DateTime.parse(_enrolDate)
+                                      .add(Duration(days: index));
+
+                                  String _showDateOnBar = DateFormat.MMMd()
+                                      .format(
+                                          DateTime.parse(_barDate.toString()));
+                                  String _showDayOnBar = DateFormat.E().format(
+                                      DateTime.parse(_barDate.toString()));
+
+                                  String _compBarDate = DateFormat.yMMMd()
+                                      .format(
+                                          DateTime.parse(_barDate.toString()));
+
+                                  for (int i = 0; i < _taskTitle.length; i++) {
+                                    String _finishedDate = DateFormat.yMMMd()
+                                        .format(DateTime.parse(
+                                            _taskTitle[i].todoFinishedDate));
+
+                                    String _dueDate = DateFormat.yMMMd().format(
+                                        DateTime.parse(
+                                            _taskTitle[i].todoDueDate));
+
+                                    if (_compBarDate == _finishedDate)
+                                      _finished++;
+                                    if ((_compBarDate == _dueDate) &&
+                                        (_compBarDate != _finishedDate)) _due++;
+                                  }
+                                  double _total =
+                                      (_due / (_due + _finished) * 100);
+
                                   return Padding(
                                     padding: const EdgeInsets.only(
                                       right: 18.0,
                                       left: 18.0,
                                     ),
-                                    child: RotatedBox(
-                                      quarterTurns: 3,
-                                      child: LinearPercentIndicator(
-                                        curve: Curves.easeIn,
-                                        width: 150.0,
-                                        animation: true,
-                                        animationDuration: 2000,
-                                        lineHeight: 10.0,
-                                        percent: 0.5,
-                                        linearStrokeCap:
-                                            LinearStrokeCap.roundAll,
-                                      ),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        RotatedBox(
+                                          quarterTurns: 3,
+                                          child: LinearPercentIndicator(
+                                            curve: Curves.easeIn,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.18,
+                                            animation: true,
+                                            animationDuration: 2000,
+                                            lineHeight: 10.0,
+                                            percent: _total.isNaN
+                                                ? 0
+                                                : (_total / 100),
+                                            linearStrokeCap:
+                                                LinearStrokeCap.roundAll,
+                                            progressColor: !_total.isNaN
+                                                ? (_total <= 30)
+                                                    ? barColors['red']
+                                                    : (_total <= 50)
+                                                        ? barColors['yellow']
+                                                        : (_total <= 80)
+                                                            ? barColors[
+                                                                'yellowish']
+                                                            : (_total <= 99)
+                                                                ? barColors[
+                                                                    'greenish']
+                                                                : barColors[
+                                                                    'green']
+                                                : barColors['red'],
+                                          ),
+                                        ),
+                                        Text(
+                                          '$_showDayOnBar.',
+                                          style: GoogleFonts.ubuntu(
+                                              color: Theme.of(context)
+                                                  .primaryColor),
+                                        ),
+                                        Text(
+                                          '$_showDateOnBar.',
+                                          style: GoogleFonts.ubuntu(
+                                              color: Theme.of(context)
+                                                  .primaryColor),
+                                        ),
+                                      ],
                                     ),
                                   );
                                 },
-                                itemCount: 18,
+                                itemCount: _differenceInDate + 1,
                                 scrollDirection: Axis.horizontal,
                               ),
                             ),
@@ -318,7 +398,7 @@ class _DashState extends State<Dash> {
                                                         maxLines: 1,
                                                         style:
                                                             GoogleFonts.ubuntu(
-                                                          fontSize: 14,
+                                                          fontSize: 13,
                                                           fontWeight:
                                                               FontWeight.w400,
                                                         ),
@@ -330,7 +410,7 @@ class _DashState extends State<Dash> {
                                                         .todoStartDate,
                                                     maxLines: 1,
                                                     style: GoogleFonts.ubuntu(
-                                                      fontSize: 15,
+                                                      fontSize: 12,
                                                       fontWeight:
                                                           FontWeight.w500,
                                                     ),
@@ -364,7 +444,7 @@ class _DashState extends State<Dash> {
                                                         maxLines: 1,
                                                         style:
                                                             GoogleFonts.ubuntu(
-                                                          fontSize: 14,
+                                                          fontSize: 13,
                                                           fontWeight:
                                                               FontWeight.w400,
                                                         ),
@@ -376,7 +456,7 @@ class _DashState extends State<Dash> {
                                                         .todoDueDate,
                                                     maxLines: 1,
                                                     style: GoogleFonts.ubuntu(
-                                                      fontSize: 15,
+                                                      fontSize: 12,
                                                       fontWeight:
                                                           FontWeight.w500,
                                                     ),
