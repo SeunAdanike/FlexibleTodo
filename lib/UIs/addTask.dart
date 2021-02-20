@@ -458,7 +458,7 @@ class _AddTaskState extends State<AddTask> {
                                           controller: _clockController,
                                           decoration: InputDecoration(
                                             hintText: '00:00',
-                                            labelText: 'Set Alarm',
+                                            labelText: 'Set Reminder',
                                             suffixIcon: InkWell(
                                                 onTap: () {
                                                   _selectDueTime(context);
