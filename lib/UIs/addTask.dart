@@ -29,6 +29,36 @@ class _AddTaskState extends State<AddTask> {
 
   var _scrollBarController = ScrollController();
 
+  var _selectedTime;
+  @override
+  void initState() {
+    _selectedTime = TimeOfDay(hour: 12, minute: 30);
+    super.initState();
+  }
+
+  _selectDueTime(BuildContext context) async {
+    var _timePicked = await showTimePicker(
+        context: context,
+        initialTime: _selectedTime,
+        builder: (context, child) {
+          return Theme(
+            data: ThemeData.light().copyWith(
+              primaryColor: const Color(0xFF8CE7F1),
+              accentColor: const Color(0xFF8CE7F1),
+              colorScheme:
+                  ColorScheme.light(primary: Theme.of(context).primaryColor),
+              buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary),
+            ),
+            child: child,
+          );
+        });
+
+    setState(() {
+      _selectedTime = _timePicked;
+      _clockController.text = '${_timePicked.format(context)}';
+    });
+  }
+
   _selectDueDate(BuildContext context) async {
     var _pickedDate = await showDatePicker(
         context: context,
@@ -430,7 +460,10 @@ class _AddTaskState extends State<AddTask> {
                                             hintText: '00:00',
                                             labelText: 'Set Alarm',
                                             suffixIcon: InkWell(
-                                                onTap: () {},
+                                                onTap: () {
+                                                  _selectDueTime(context);
+                                                  print(_clockController.text);
+                                                },
                                                 child: Icon(
                                                     Icons.alarm_add_outlined)),
                                             labelStyle: GoogleFonts.ubuntu(

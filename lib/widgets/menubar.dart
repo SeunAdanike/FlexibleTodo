@@ -52,6 +52,15 @@ class _MenuBarState extends State<MenuBar> {
                       : Theme.of(context).primaryColorLight,
                 ),
                 onPressed: () {
+                  setState(() {
+                    widget.isAddTask = widget.isHome =
+                        widget.isProfile = widget.isSettings = false;
+                    widget.sizeAddTask = widget.sizeHome =
+                        widget.sizeProfile = widget.sizeSetting = 30.0;
+                    widget.isMenu = true;
+                    widget.sizeMenu = 36;
+                  });
+
                   Scaffold.of(context).openDrawer();
                 },
               ),
