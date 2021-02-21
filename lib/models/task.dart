@@ -1,18 +1,20 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
 
 class Task {
   final int id;
   final String title;
   final String category;
   final String progressType;
-  final String description;
-  final String todoStartDate;
   final String todoDueDate;
-  final String todoFinishedDate;
-
+  final String reminder;
+  final String description;
   final Map<String, bool> measurables;
+  final String todoFinishedDate;
   final bool isFinished;
-  final String time;
+  final String todoStartDate;
+
   const Task({
     @required this.title,
     @required this.category,
@@ -21,25 +23,25 @@ class Task {
     @required this.description,
     @required this.todoStartDate,
     @required this.todoDueDate,
-    @required this.todoFinishedDate,
+    this.todoFinishedDate,
     this.measurables,
     @required this.isFinished,
-    @required this.time,
+    @required this.reminder,
   });
   taskMap() {
+    String measurableString = json.encode(measurables);
     var map = Map<String, dynamic>();
     map['id'] = id;
-    map['title'] = title;
-    map['description'] = description;
-    map['category'] = category;
-    map['todoStartDate'] = todoStartDate;
-    map['todoDueDate'] = todoDueDate;
-    map['todoFinishedDate'] = todoDueDate;
- 
-    map['isFinished'] = isFinished;
-    map['measurables'] = measurables;
-    map['progressType'] = progressType;
-    map['finishedTime'] = time;
+    map['taskTitle'] = title;
+    map['taskDescription'] = description;
+    map['taskCategory'] = category;
+    map['taskStartDate'] = todoStartDate;
+    map['taskDueDate'] = todoDueDate;
+    map['taskFinishedDate'] = todoFinishedDate;
+    map['isTaskFinished'] = isFinished.toString();
+    map['taskMeasurables'] = measurableString;
+    map['taskProgressType'] = progressType;
+    map['taskRemainder'] = reminder;
     return map;
   }
 }

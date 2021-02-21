@@ -17,7 +17,7 @@ const DUMMY_TASK = const [
       'visit IEEE and scienceDirect': false,
       'filter out the papers': false,
     },
-    time: '12:00AM',
+    reminder: '12:00AM',
   ),
   Task(
     title: 'Map Work',
@@ -29,7 +29,7 @@ const DUMMY_TASK = const [
     description: 'I am to put locations on the maps',
     isFinished: false,
     id: 3,
-    time: '12:00AM',
+    reminder: '12:00AM',
   ),
   Task(
     title: 'Publishing Paper',
@@ -49,7 +49,7 @@ const DUMMY_TASK = const [
       'visit IEEE and scienceDirect': true,
       'filter out the papers': false,
     },
-    time: '1:00AM',
+    reminder: '1:00AM',
   ),
   Task(
     title: 'Cook Rice',
@@ -61,7 +61,7 @@ const DUMMY_TASK = const [
     description: 'I am to cook different types of soup',
     isFinished: true,
     id: 4,
-    time: '12:00AM',
+   reminder: '12:00AM',
   ),
   Task(
     title: 'Conference Papers',
@@ -81,7 +81,7 @@ const DUMMY_TASK = const [
       'visit IEEE and scienceDirect': false,
       'filter out the papers': false,
     },
-    time: '1:00AM',
+    reminder: '1:00AM',
   ),
   Task(
     title: 'Seive Rice Flour',
@@ -93,6 +93,6 @@ const DUMMY_TASK = const [
     description: 'I am to cook different types of soup',
     isFinished: false,
     id: 4,
-    time: '12:00AM',
+  reminder: '12:00AM',
   ),
 ];

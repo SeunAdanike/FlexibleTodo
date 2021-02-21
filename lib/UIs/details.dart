@@ -371,7 +371,7 @@ class _TodoDetailsScreenState extends State<TodoDetailsScreen> {
                                               ),
                                             ),
                                             Text(
-                                              '${_task.todoDueDate} at ${_task.time}',
+                                              '${_task.todoDueDate} at ${_task.reminder}',
                                               style: GoogleFonts.ubuntu(
                                                 fontSize: 18,
                                                 color: Colors.black,
