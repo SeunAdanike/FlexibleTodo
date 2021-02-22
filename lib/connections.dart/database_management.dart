@@ -1,9 +1,11 @@
 import 'package:flexibletodo/connections.dart/database_connection.dart';
+import 'package:flexibletodo/models/measurables.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DatabaseManager {
   DatabaseConnections _databaseConnections;
   String table = 'TaskList';
+  String measurableTable = 'Measurables';
   DatabaseManager() {
     _databaseConnections = DatabaseConnections();
   }
@@ -25,20 +27,45 @@ class DatabaseManager {
     );
   }
 
+  saveMeasurables(measurablesAdding) async {
+    Database connector = await database;
+    return await connector.insert(measurableTable, measurablesAdding);
+  }
+
   getAllTask() async {
     Database connector = await database;
-    return connector.query(table);
+    return await connector.query(table);
+  }
+
+  getAllMeasurables() async {
+    Database connector = await database;
+    return await connector.query(measurableTable);
   }
 
   getTaskById(taskId) async {
     Database connector = await database;
-    return await connector.query(table, where: 'id =?', whereArgs: [taskId]);
+    var result =
+        await connector.query(table, where: 'id =?', whereArgs: [taskId]);
+    return result.toList();
+  }
+
+  getMeasurablesById(measurableId) async {
+    Database connector = await database;
+    var result = await connector
+        .query(measurableTable, where: 'id =?', whereArgs: [measurableId]);
+    return result.toList();
   }
 
   update(taskData) async {
     Database connector = await database;
     return await connector
         .update(table, taskData, where: 'id = ?', whereArgs: [taskData['id']]);
+  }
+
+  updateMeasurable(measurableData) async {
+    Database connector = await database;
+    return await connector.update(measurableTable, measurableData,
+        where: 'id = ?', whereArgs: [measurableData['id']]);
   }
 
   delete(itemId) async {

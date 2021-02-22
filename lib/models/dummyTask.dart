@@ -1,6 +1,6 @@
 import 'package:flexibletodo/models/task.dart';
 
-const DUMMY_TASK = const [
+ var DUMMY_TASK =  [
   Task(
     title: 'Research Work',
     category: 'Academics',
@@ -11,12 +11,7 @@ const DUMMY_TASK = const [
     description: 'I am to search for recent papers online',
     isFinished: true,
     id: 1,
-    measurables: {
-      'Download Endnote': true,
-      'Install Endnote': true,
-      'visit IEEE and scienceDirect': false,
-      'filter out the papers': false,
-    },
+  
     reminder: '12:00AM',
   ),
   Task(
@@ -42,13 +37,7 @@ const DUMMY_TASK = const [
         'I am to publish my finished papers and alot of thing that might no be necessary',
     isFinished: false,
     id: 2,
-    measurables: {
-      'Visit the publish site': true,
-      'Download Endnote': true,
-      'Filter out the unneccessary stuffs': true,
-      'visit IEEE and scienceDirect': true,
-      'filter out the papers': false,
-    },
+  
     reminder: '1:00AM',
   ),
   Task(
@@ -74,13 +63,7 @@ const DUMMY_TASK = const [
         'I am to publish my finished papers and alot of thing that might no be necessary',
     isFinished: false,
     id: 2,
-    measurables: {
-      'Visit the publish site': true,
-      'Download Endnote': false,
-      'Filter out the unneccessary stuffs': true,
-      'visit IEEE and scienceDirect': false,
-      'filter out the papers': false,
-    },
+  
     reminder: '1:00AM',
   ),
   Task(

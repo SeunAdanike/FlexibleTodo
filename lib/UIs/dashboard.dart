@@ -466,66 +466,66 @@ class _DashState extends State<Dash> {
                                               Divider(
                                                 height: 5,
                                               ),
-                                              if (_pendingTask[index]
-                                                      .measurables ==
-                                                  null)
-                                                Text(
-                                                  _pendingTask[index].isFinished
-                                                      ? 'Done'
-                                                      : 'Not yet done',
-                                                  style: GoogleFonts.ubuntu(
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.w600,
-                                                    color: _pendingTask[index]
-                                                            .isFinished
-                                                        ? Theme.of(context)
-                                                            .primaryColor
-                                                        : Colors.red,
-                                                  ),
-                                                ),
-                                              if (_pendingTask[index]
-                                                      .measurables !=
-                                                  null)
-                                                Column(
-                                                  children: [
-                                                    LinearPercentIndicator(
-                                                      padding:
-                                                          EdgeInsets.all(8),
-                                                      curve: Curves.easeIn,
-                                                      width: 150.0,
-                                                      animation: true,
-                                                      animationDuration: 2000,
-                                                      lineHeight: 8.0,
-                                                      percent: (_progressCalculator(
-                                                              _pendingTask[
-                                                                      index]
-                                                                  .measurables) /
-                                                          100),
-                                                      linearStrokeCap:
-                                                          LinearStrokeCap
-                                                              .roundAll,
-                                                      progressColor: (_percentage <=
-                                                              30)
-                                                          ? barColors['red']
-                                                          : (_percentage <= 50)
-                                                              ? barColors[
-                                                                  'yellow']
-                                                              : (_percentage <=
-                                                                      80)
-                                                                  ? barColors[
-                                                                      'yellowish']
-                                                                  : (_percentage <=
-                                                                          99)
-                                                                      ? barColors[
-                                                                          'greenish']
-                                                                      : barColors[
-                                                                          'green'],
-                                                    ),
-                                                    Divider(
-                                                      height: 7,
-                                                    ),
-                                                  ],
-                                                ),
+                                              // if (_pendingTask[index]
+                                              //         .measurables ==
+                                              //     null)
+                                              //   Text(
+                                              //     _pendingTask[index].isFinished
+                                              //         ? 'Done'
+                                              //         : 'Not yet done',
+                                              //     style: GoogleFonts.ubuntu(
+                                              //       fontSize: 14,
+                                              //       fontWeight: FontWeight.w600,
+                                              //       color: _pendingTask[index]
+                                              //               .isFinished
+                                              //           ? Theme.of(context)
+                                              //               .primaryColor
+                                              //           : Colors.red,
+                                              //     ),
+                                              //   ),
+                                              // if (_pendingTask[index]
+                                              //         .measurables !=
+                                              //     null)
+                                              //   Column(
+                                              //     children: [
+                                              //       LinearPercentIndicator(
+                                              //         padding:
+                                              //             EdgeInsets.all(8),
+                                              //         curve: Curves.easeIn,
+                                              //         width: 150.0,
+                                              //         animation: true,
+                                              //         animationDuration: 2000,
+                                              //         lineHeight: 8.0,
+                                              //         percent: (_progressCalculator(
+                                              //                 _pendingTask[
+                                              //                         index]
+                                              //                     .measurables) /
+                                              //             100),
+                                              //         linearStrokeCap:
+                                              //             LinearStrokeCap
+                                              //                 .roundAll,
+                                              //         progressColor: (_percentage <=
+                                              //                 30)
+                                              //             ? barColors['red']
+                                              //             : (_percentage <= 50)
+                                              //                 ? barColors[
+                                              //                     'yellow']
+                                              //                 : (_percentage <=
+                                              //                         80)
+                                              //                     ? barColors[
+                                              //                         'yellowish']
+                                              //                     : (_percentage <=
+                                              //                             99)
+                                              //                         ? barColors[
+                                              //                             'greenish']
+                                              //                         : barColors[
+                                              //                             'green'],
+                                              //       ),
+                                              //       Divider(
+                                              //         height: 7,
+                                              //       ),
+                                              //     ],
+                                              //   ),
                                               Row(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment

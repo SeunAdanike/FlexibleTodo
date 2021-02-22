@@ -1,4 +1,8 @@
+import 'dart:convert';
+
+import 'package:flexibletodo/connections.dart/database_management.dart';
 import 'package:flexibletodo/models/colors.dart';
+import 'package:flexibletodo/models/measurables.dart';
 import 'package:flexibletodo/models/task.dart';
 import 'package:flexibletodo/widgets/drawer.dart';
 import 'package:flexibletodo/widgets/edgeDesign.dart';
@@ -24,12 +28,38 @@ class _TodoDetailsScreenState extends State<TodoDetailsScreen> {
   Task _task;
   bool _isDone = false;
   var _scrollController = ScrollController();
+  DatabaseManager _databaseManager = DatabaseManager();
+  Measurables measuresFetched;
+  List<Measurables> measurablesList;
   _TodoDetailsScreenState(this._task);
 
-  @override
-  void initState() {
-    if (_task.measurables != null) if (_task.measurables.isNotEmpty) {
-      _progressCal = _task.measurables.values.toList();
+  _getMeasuresbyId() async {
+    measurablesList = List<Measurables>();
+    var measures = await _databaseManager.getMeasurablesById(_task.id);
+    measures.forEach((measure) {
+      setState(() {
+        bool _isTick;
+        measure['isTicked'].toLowerCase() == 'true'
+            ? _isTick = true
+            : _isTick = false;
+        Map<String, dynamic> _measureMap = jsonDecode(measure['measurable']);
+        measuresFetched = Measurables();
+        measuresFetched.id = measure['id'];
+        measuresFetched.isTicked = _isTick;
+        measuresFetched.measurables = _measureMap;
+        measurablesList.add(measuresFetched);
+        print(measurablesList[0].measurables.values);
+      });
+    });
+  }
+
+  int _percentCal() {
+    done = 0;
+
+    unDone = 0;
+
+    if (measurablesList != null) if (measurablesList.isNotEmpty) {
+      _progressCal = measurablesList[0].measurables.values.toList();
       for (int i = 0; i < _progressCal.length; i++) {
         if (_progressCal[i] == true)
           done++;
@@ -39,6 +69,15 @@ class _TodoDetailsScreenState extends State<TodoDetailsScreen> {
       percent = done / (done + unDone);
       percentage = (percent * 100).round();
     }
+    return percentage;
+  }
+
+  @override
+  void initState() {
+    _getMeasuresbyId().then((_) {
+      _percentCal();
+    });
+
     super.initState();
   }
 
@@ -285,7 +324,8 @@ class _TodoDetailsScreenState extends State<TodoDetailsScreen> {
                                                     .primaryColor,
                                               ),
                                             ),
-                                            if (_task.measurables == null)
+                                            if (_task.progressType ==
+                                                'Definite')
                                               Row(
                                                 children: [
                                                   Text(
@@ -307,7 +347,10 @@ class _TodoDetailsScreenState extends State<TodoDetailsScreen> {
                                                     onPressed: () {
                                                       setState(() {
                                                         _isDone = !_isDone;
+                                                        _task.isFinished =
+                                                            _isDone;
                                                       });
+                                                      print(_isDone);
                                                     },
                                                     icon: Icon(
                                                       _isDone
@@ -318,8 +361,8 @@ class _TodoDetailsScreenState extends State<TodoDetailsScreen> {
                                                   ),
                                                 ],
                                               ),
-                                            if (_task.measurables != null)
-                                              if (_task.measurables.isNotEmpty)
+                                            if (measurablesList != null)
+                                              if (measurablesList.isNotEmpty)
                                                 Column(
                                                   children: [
                                                     LinearPercentIndicator(
@@ -397,15 +440,15 @@ class _TodoDetailsScreenState extends State<TodoDetailsScreen> {
                                                 color: Colors.black,
                                               ),
                                               softWrap: true,
-                                              textAlign: TextAlign.justify,
+                                              textAlign: TextAlign.center,
                                             ),
                                           ],
                                         ),
-                                        if (_task.measurables != null)
-                                          if (_task.measurables.isNotEmpty)
+                                        if (measurablesList != null)
+                                          if (measurablesList.isNotEmpty)
                                             Divider(),
-                                        if (_task.measurables != null)
-                                          if (_task.measurables.isNotEmpty)
+                                        if (measurablesList != null)
+                                          if (measurablesList.isNotEmpty)
                                             Column(
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
@@ -440,21 +483,35 @@ class _TodoDetailsScreenState extends State<TodoDetailsScreen> {
                                                       (context, index) {
                                                     List<String>
                                                         measurablesDetails =
-                                                        _task.measurables.keys
+                                                        measurablesList[0]
+                                                            .measurables
+                                                            .keys
                                                             .toList();
-                                                    Map<String, bool>
-                                                        _newMeasurables =
-                                                        Map.fromIterable(
-                                                            measurablesDetails,
-                                                            key: (k) =>
-                                                                measurablesDetails[
-                                                                    index],
-                                                            value: (v) => _task
-                                                                    .measurables[
-                                                                '${measurablesDetails[index]}']);
+                                                    bool val = measurablesList[
+                                                                0]
+                                                            .measurables[
+                                                        '${measurablesDetails[index]}'];
+
                                                     return ListTile(
-                                                      onTap: () {
-                                                        setState(() {});
+                                                      onTap: () async {
+                                                        setState(() {
+                                                          measurablesList[0]
+                                                                      .measurables[
+                                                                  '${measurablesDetails[index]}'] =
+                                                              !measurablesList[
+                                                                          0]
+                                                                      .measurables[
+                                                                  '${measurablesDetails[index]}'];
+                                                          if (measurablesList[0]
+                                                                  .measurables[
+                                                              '${measurablesDetails[index]}'])
+                                                            _databaseManager
+                                                                .updateMeasurable(
+                                                                    measurablesList[
+                                                                            0]
+                                                                        .toMap());
+                                                          _percentCal();
+                                                        });
                                                       },
                                                       dense: false,
                                                       contentPadding:
@@ -477,8 +534,7 @@ class _TodoDetailsScreenState extends State<TodoDetailsScreen> {
                                                           ),
                                                         ),
                                                       ),
-                                                      leading: _newMeasurables[
-                                                              '${measurablesDetails[index]}']
+                                                      leading: val
                                                           ? Icon(
                                                               Icons
                                                                   .check_box_outlined,
@@ -489,8 +545,9 @@ class _TodoDetailsScreenState extends State<TodoDetailsScreen> {
                                                               .check_box_outline_blank_sharp),
                                                     );
                                                   },
-                                                  itemCount:
-                                                      _task.measurables.length,
+                                                  itemCount: measurablesList[0]
+                                                      .measurables
+                                                      .length,
                                                 )
                                               ],
                                             )

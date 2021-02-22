@@ -1,5 +1,10 @@
+import 'dart:convert';
+
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flexibletodo/UIs/details.dart';
-import 'package:flexibletodo/models/dummyTask.dart';
+import 'package:flexibletodo/connections.dart/database_management.dart';
+
+import 'package:flexibletodo/models/task.dart';
 import 'package:flexibletodo/widgets/drawer.dart';
 import 'package:flexibletodo/widgets/edgeDesign.dart';
 import 'package:flexibletodo/widgets/menubar.dart';
@@ -12,6 +17,40 @@ class AllTask extends StatefulWidget {
 }
 
 class _AllTaskState extends State<AllTask> {
+  List _taskList = List<Task>();
+  DatabaseManager _databaseManager = DatabaseManager();
+  void _getAllValues() async {
+    _taskList = List<Task>();
+    var tasks = await _databaseManager.getAllTask();
+    tasks.forEach((task) {
+      setState(() {
+        bool _isFinished;
+        task['taskFinished'].toLowerCase() == 'true'
+            ? _isFinished = true
+            : _isFinished = false;
+
+        Task taskModel = Task();
+        taskModel.id = task['id'];
+        taskModel.title = task['taskTitle'];
+        taskModel.category = task['taskCategory'];
+        taskModel.todoStartDate = task['taskStartDate'];
+        taskModel.todoFinishedDate = task['taskFinishedDate'];
+        taskModel.progressType = task['taskProgressType'];
+        taskModel.todoDueDate = task['taskDueDate'];
+        taskModel.reminder = task['taskRemainder'];
+        taskModel.description = task['taskDescription'];
+        taskModel.isFinished = _isFinished;
+        _taskList.add(taskModel);
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    _getAllValues();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -97,7 +136,7 @@ class _AllTaskState extends State<AllTask> {
                       ),
                     ),
                     Text(
-                      '(${DUMMY_TASK.length})',
+                      '(${_taskList.length})',
                       style: GoogleFonts.ubuntu(
                         fontSize: 25,
                         color: Colors.white,
@@ -118,7 +157,7 @@ class _AllTaskState extends State<AllTask> {
                           onTap: () {
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) => TodoDetailsScreen(
-                                      task: DUMMY_TASK[index],
+                                      task: _taskList[index],
                                     )));
                           },
                           child: Container(
@@ -145,18 +184,25 @@ class _AllTaskState extends State<AllTask> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          Text(
-                                            DUMMY_TASK[index].title,
-                                            style: GoogleFonts.ubuntu(
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.w600,
+                                          Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                .45,
+                                            child: AutoSizeText(
+                                              _taskList[index].title,
+                                              softWrap: true,
+                                              style: GoogleFonts.ubuntu(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.w600,
+                                              ),
                                             ),
                                           ),
                                           SizedBox(
                                             height: 5,
                                           ),
                                           Text(
-                                            DUMMY_TASK[index].category,
+                                            _taskList[index].category,
                                             style: GoogleFonts.ubuntu(
                                               fontSize: 16,
                                               fontWeight: FontWeight.w400,
@@ -169,7 +215,7 @@ class _AllTaskState extends State<AllTask> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            DUMMY_TASK[index].isFinished
+                                            _taskList[index].isFinished
                                                 ? 'Done'
                                                 : 'Pending',
                                             style: GoogleFonts.ubuntu(
@@ -181,9 +227,9 @@ class _AllTaskState extends State<AllTask> {
                                             height: 6,
                                           ),
                                           Text(
-                                            DUMMY_TASK[index].isFinished
+                                            _taskList[index].isFinished
                                                 ? 'Completed'
-                                                : 'Due on ${DUMMY_TASK[index].todoDueDate}',
+                                                : 'Due on ${_taskList[index].todoDueDate}',
                                             style: GoogleFonts.ubuntu(
                                               fontSize: 16,
                                               fontWeight: FontWeight.w400,
@@ -235,7 +281,7 @@ class _AllTaskState extends State<AllTask> {
                         ),
                       );
                     },
-                    itemCount: DUMMY_TASK.length,
+                    itemCount: _taskList.length,
                   ),
                 )
               ],

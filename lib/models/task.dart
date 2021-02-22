@@ -3,19 +3,18 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 
 class Task {
-  final int id;
-  final String title;
-  final String category;
-  final String progressType;
-  final String todoDueDate;
-  final String reminder;
-  final String description;
-  final Map<String, bool> measurables;
-  final String todoFinishedDate;
-  final bool isFinished;
-  final String todoStartDate;
+  int id;
+  String title;
+  String category;
+  String progressType;
+  String todoDueDate;
+  String reminder;
+  String description;
+  String todoFinishedDate;
+  bool isFinished;
+  String todoStartDate;
 
-  const Task({
+  Task({
     @required this.title,
     @required this.category,
     @required this.id,
@@ -24,12 +23,10 @@ class Task {
     @required this.todoStartDate,
     @required this.todoDueDate,
     this.todoFinishedDate,
-    this.measurables,
     @required this.isFinished,
     @required this.reminder,
   });
   taskMap() {
-    String measurableString = json.encode(measurables);
     var map = Map<String, dynamic>();
     map['id'] = id;
     map['taskTitle'] = title;
@@ -38,8 +35,8 @@ class Task {
     map['taskStartDate'] = todoStartDate;
     map['taskDueDate'] = todoDueDate;
     map['taskFinishedDate'] = todoFinishedDate;
-    map['isTaskFinished'] = isFinished.toString();
-    map['taskMeasurables'] = measurableString;
+    map['taskFinished'] = isFinished.toString();
+
     map['taskProgressType'] = progressType;
     map['taskRemainder'] = reminder;
     return map;

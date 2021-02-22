@@ -14,7 +14,9 @@ class DatabaseConnections {
   }
 
   _onOpeningDatabase(Database db, int version) async {
-    return await db.execute(
-        "CREATE TABLE TaskList(id INTEGER PRIMARY KEY, taskTitle TEXT, taskCategory TEXT, taskStartDate TEXT,  taskFinishedDate TEXT, taskProgressType TEXT, taskDueDate TEXT, taskRemainder TEXT, taskDescription TEXT, taskMeasurables TEXT, isTaskFinished TEXT)");
+    await db.execute(
+        "CREATE TABLE TaskList(id INTEGER PRIMARY KEY, taskTitle TEXT, taskCategory TEXT, taskStartDate TEXT,  taskFinishedDate TEXT, taskProgressType TEXT, taskDueDate TEXT, taskRemainder TEXT, taskFinished TEXT, taskDescription TEXT)");
+    await db.execute(
+        "CREATE TABLE Measurables(id INTEGER PRIMARY KEY, measurable TEXT, isTicked TEXT)");
   }
 }

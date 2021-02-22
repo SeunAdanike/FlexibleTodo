@@ -1,5 +1,6 @@
 import 'package:flexibletodo/connections.dart/database_management.dart';
 import 'package:flexibletodo/models/categories.dart';
+import 'package:flexibletodo/models/measurables.dart';
 import 'package:flexibletodo/models/task.dart';
 import 'package:flexibletodo/widgets/drawer.dart';
 import 'package:flexibletodo/widgets/edgeDesign.dart';
@@ -31,6 +32,7 @@ class _AddTaskState extends State<AddTask> {
 
   var _scrollBarController = ScrollController();
   Task newTask;
+  Measurables newMeasurables = Measurables();
   var _selectedTime;
   var todaysDate;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -46,6 +48,8 @@ class _AddTaskState extends State<AddTask> {
     );
     _scaffoldKey.currentState.showSnackBar(_snackBar);
   }
+
+  int genId;
 
   @override
   void initState() {
@@ -64,7 +68,9 @@ class _AddTaskState extends State<AddTask> {
   }
 
   _addTasktoDb() {
+    genId = DateTime.now().millisecondsSinceEpoch;
     newTask = Task(
+      id: genId,
       title: _titleController.text,
       category: _categoriesHolder.toString(),
       progressType: isGradual ? 'Gradual' : 'Definite',
@@ -73,20 +79,26 @@ class _AddTaskState extends State<AddTask> {
       description: _descriptionController.text,
       isFinished: false,
       todoStartDate: todaysDate.toString(),
-      measurables: isGradual ? _measurablesToMap() : null,
       todoFinishedDate: null,
     );
-    print(newTask.taskMap());
+    if (isGradual) {
+      newMeasurables.id = genId;
+      newMeasurables.measurables = _measurablesToMap();
+      newMeasurables.isTicked = false;
+    }
+    print(newTask.id);
   }
 
   _clearFields() {
     setState(() {
       _titleController.clear();
       isGradual = true;
-      _dueDate.clear();
+
       _clockController.clear();
       _descriptionController.clear();
       _measurable = [];
+
+      _dueDate.clear();
     });
   }
 
@@ -581,39 +593,44 @@ class _AddTaskState extends State<AddTask> {
                                         ),
                                         shrinkWrap: true,
                                         itemBuilder: (context, index) {
-                                          return Row(
-                                            children: [
-                                              Text(
-                                                '${index + 1}',
-                                                style: GoogleFonts.ubuntu(
-                                                    fontSize: 18),
-                                              ),
-                                              SizedBox(
-                                                width: 20,
-                                              ),
-                                              Flexible(
-                                                child: Text(
-                                                  _measurable[index],
+                                          return Padding(
+                                            padding: const EdgeInsets.only(
+                                                bottom: 8.0),
+                                            child: Row(
+                                              children: [
+                                                Text(
+                                                  '${index + 1}',
                                                   style: GoogleFonts.ubuntu(
                                                       fontSize: 18),
-                                                  softWrap: true,
                                                 ),
-                                              ),
-                                              SizedBox(
-                                                width: 20,
-                                              ),
-                                              InkWell(
-                                                onTap: () {
-                                                  setState(() {
-                                                    _measurable.removeAt(index);
-                                                  });
-                                                },
-                                                child: Icon(
-                                                  Icons.delete,
-                                                  color: Colors.red,
+                                                SizedBox(
+                                                  width: 20,
                                                 ),
-                                              )
-                                            ],
+                                                Flexible(
+                                                  child: Text(
+                                                    _measurable[index],
+                                                    style: GoogleFonts.ubuntu(
+                                                        fontSize: 18),
+                                                    softWrap: true,
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: 20,
+                                                ),
+                                                InkWell(
+                                                  onTap: () {
+                                                    setState(() {
+                                                      _measurable
+                                                          .removeAt(index);
+                                                    });
+                                                  },
+                                                  child: Icon(
+                                                    Icons.delete,
+                                                    color: Colors.red,
+                                                  ),
+                                                )
+                                              ],
+                                            ),
                                           );
                                         },
                                         itemCount: _measurable.length,
@@ -678,6 +695,13 @@ class _AddTaskState extends State<AddTask> {
                                                     await _databaseManager
                                                         .saveTask(
                                                             newTask.taskMap());
+
+                                                if (isGradual)
+                                                  await _databaseManager
+                                                      .saveMeasurables(
+                                                          newMeasurables
+                                                              .toMap());
+
                                                 if (addingTask > 0) {
                                                   _showSnackBar(Text(
                                                     'Todo is inserted successfully',
@@ -687,8 +711,8 @@ class _AddTaskState extends State<AddTask> {
                                                     ),
                                                   ));
                                                 }
+
                                                 _clearFields();
-                                                _formKey.currentState.reset();
                                               }
                                             },
                                             child: Padding(
