@@ -33,6 +33,14 @@ class _TodoDetailsScreenState extends State<TodoDetailsScreen> {
   List<Measurables> measurablesList;
   _TodoDetailsScreenState(this._task);
 
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  _showSnackBar(message) {
+    var _snackBar = SnackBar(
+      content: message,
+    );
+    _scaffoldKey.currentState.showSnackBar(_snackBar);
+  }
+
   _getMeasuresbyId() async {
     measurablesList = List<Measurables>();
     var measures = await _databaseManager.getMeasurablesById(_task.id);
@@ -84,6 +92,7 @@ class _TodoDetailsScreenState extends State<TodoDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       drawer: AppDrawer(),
       extendBody: true,
       bottomNavigationBar: MenuBar(
@@ -393,7 +402,7 @@ class _TodoDetailsScreenState extends State<TodoDetailsScreen> {
                                                                           'green'],
                                                     ),
                                                     Text(
-                                                      '${percent * 100}% Completed!',
+                                                      '${(percent * 100).ceil()}% Completed!',
                                                       style: GoogleFonts.ubuntu(
                                                         fontSize: 16,
                                                         color: Colors.black,
@@ -568,7 +577,15 @@ class _TodoDetailsScreenState extends State<TodoDetailsScreen> {
                                   RaisedButton(
                                     shape: StadiumBorder(),
                                     color: Theme.of(context).primaryColor,
-                                    onPressed: () {},
+                                    onPressed: () async {
+                                      var result = await _databaseManager
+                                          .updateMeasurable(
+                                              measurablesList[0].toMap());
+                                      if (result > 0) {
+                                        _showSnackBar(
+                                            Text('Update Successful'));
+                                      }
+                                    },
                                     child: Text(
                                       'Update',
                                       style: GoogleFonts.ubuntu(

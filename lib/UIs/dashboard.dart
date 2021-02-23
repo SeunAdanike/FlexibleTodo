@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flexibletodo/UIs/details.dart';
+import 'package:flexibletodo/connections.dart/database_management.dart';
 import 'package:flexibletodo/models/colors.dart';
-import 'package:flexibletodo/models/dummyTask.dart';
+import 'package:flexibletodo/models/measurables.dart';
+
 import 'package:flexibletodo/models/task.dart';
 import 'package:flexibletodo/widgets/drawer.dart';
 import 'package:flexibletodo/widgets/edgeDesign.dart';
@@ -17,13 +21,13 @@ class Dash extends StatefulWidget {
 }
 
 class _DashState extends State<Dash> {
-  List<Task> _taskTitle = List<Task>();
   List<Task> _pendingTask = List<Task>();
-  List<bool> _progressCal = List();
-  int _unDone;
-  int _percentage = 0;
+  List _progressCal = List();
+  int _done;
+  int _percentage;
   List<Task> _dueToday = List<Task>();
   String _enrolDate = '2021-02-10';
+  Measurables measuresFetched;
 
   DateTime _todaysDate = DateTime.now();
 
@@ -31,26 +35,80 @@ class _DashState extends State<Dash> {
 
   int _differenceInDate = 0;
 
-  int _progressCalculator(Map<String, bool> measurables) {
-    _unDone = 0;
+  int _progressCalculator(Map measurables) {
+    _percentage = 0;
+    _done = 0;
     _progressCal = measurables.values.toList();
     for (int i = 0; i < _progressCal.length; i++) {
-      if (!_progressCal[i]) _unDone++;
+      if (_progressCal[i] == true) _done++;
     }
-    _percentage = ((_unDone / (_progressCal.length)) * 100).round();
+    _percentage = ((_done / (_progressCal.length)) * 100).round();
+
     return _percentage;
+  }
+
+  List _taskList = List<Task>();
+  List<Measurables> _measurablesList = List<Measurables>();
+  var _databaseManager = DatabaseManager();
+
+  _getAllMeasurables() async {
+    _measurablesList = List<Measurables>();
+    var measures = await _databaseManager.getAllMeasurables();
+    measures.forEach((measure) {
+      setState(() {
+        bool _isTick;
+        measure['isTicked'].toLowerCase() == 'true'
+            ? _isTick = true
+            : _isTick = false;
+        Map<String, dynamic> _measureMap = jsonDecode(measure['measurable']);
+        measuresFetched = Measurables();
+        measuresFetched.id = measure['id'];
+        measuresFetched.isTicked = _isTick;
+        measuresFetched.measurables = _measureMap;
+        _measurablesList.add(measuresFetched);
+      });
+    });
+  }
+
+  _getAllTasks() async {
+    _taskList = List<Task>();
+    var tasks = await _databaseManager.getAllTask();
+    tasks.forEach((task) {
+      setState(() {
+        bool _isFinished;
+        task['taskFinished'].toLowerCase() == 'true'
+            ? _isFinished = true
+            : _isFinished = false;
+
+        Task taskModel = Task();
+        taskModel.id = task['id'];
+        taskModel.title = task['taskTitle'];
+        taskModel.category = task['taskCategory'];
+        taskModel.todoStartDate = task['taskStartDate'];
+        taskModel.todoFinishedDate = task['taskFinishedDate'];
+        taskModel.progressType = task['taskProgressType'];
+        taskModel.todoDueDate = task['taskDueDate'];
+        taskModel.reminder = task['taskRemainder'];
+        taskModel.description = task['taskDescription'];
+        taskModel.isFinished = _isFinished;
+        _taskList.add(taskModel);
+      });
+    });
   }
 
   @override
   void initState() {
-    _taskTitle = DUMMY_TASK.toList();
-    for (int i = 0; i < _taskTitle.length; i++) {
-      if (_taskTitle[i].isFinished == false) _pendingTask.add(_taskTitle[i]);
-      if (_taskTitle[i].todoDueDate == '2021-04-05')
-        _dueToday.add(_taskTitle[i]);
-    }
-    DateTime _enrolDateConvert = DateTime.parse(_enrolDate);
-    _differenceInDate = _todaysDate.difference(_enrolDateConvert).inDays;
+    String toDayDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    _getAllTasks().then((_) {
+      for (int i = 0; i < _taskList.length; i++) {
+        if (_taskList[i].isFinished == false) _pendingTask.add(_taskList[i]);
+        if (_taskList[i].todoDueDate == toDayDate) _dueToday.add(_taskList[i]);
+      }
+      DateTime _enrolDateConvert = DateTime.parse(_enrolDate);
+      _differenceInDate = _todaysDate.difference(_enrolDateConvert).inDays;
+    });
+    _getAllMeasurables();
+
     super.initState();
   }
 
@@ -178,22 +236,7 @@ class _DashState extends State<Dash> {
                                       .format(
                                           DateTime.parse(_barDate.toString()));
 
-                                  for (int i = 0; i < _taskTitle.length; i++) {
-                                    String _finishedDate = DateFormat.yMMMd()
-                                        .format(DateTime.parse(
-                                            _taskTitle[i].todoFinishedDate));
-
-                                    String _dueDate = DateFormat.yMMMd().format(
-                                        DateTime.parse(
-                                            _taskTitle[i].todoDueDate));
-
-                                    if (_compBarDate == _finishedDate)
-                                      _finished++;
-                                    if ((_compBarDate == _dueDate) &&
-                                        (_compBarDate != _finishedDate)) _due++;
-                                  }
-                                  double _total =
-                                      (_due / (_due + _finished) * 100);
+                                  double _total = 79;
 
                                   return Padding(
                                     padding: const EdgeInsets.only(
@@ -285,6 +328,19 @@ class _DashState extends State<Dash> {
                               height: MediaQuery.of(context).size.height * 0.23,
                               child: ListView.builder(
                                 itemBuilder: (context, index) {
+                                  double forIndicator;
+                                  for (int i = 0;
+                                      i < _measurablesList.length;
+                                      i++) {
+                                    if (_measurablesList[i].id ==
+                                        _pendingTask[index].id) {
+                                      forIndicator = (_progressCalculator(
+                                              _measurablesList[i]
+                                                  .measurables)) /
+                                          100;
+                                    }
+                                  }
+
                                   return InkWell(
                                     onTap: () {
                                       Navigator.of(context).push(
@@ -466,66 +522,68 @@ class _DashState extends State<Dash> {
                                               Divider(
                                                 height: 5,
                                               ),
-                                              // if (_pendingTask[index]
-                                              //         .measurables ==
-                                              //     null)
-                                              //   Text(
-                                              //     _pendingTask[index].isFinished
-                                              //         ? 'Done'
-                                              //         : 'Not yet done',
-                                              //     style: GoogleFonts.ubuntu(
-                                              //       fontSize: 14,
-                                              //       fontWeight: FontWeight.w600,
-                                              //       color: _pendingTask[index]
-                                              //               .isFinished
-                                              //           ? Theme.of(context)
-                                              //               .primaryColor
-                                              //           : Colors.red,
-                                              //     ),
-                                              //   ),
-                                              // if (_pendingTask[index]
-                                              //         .measurables !=
-                                              //     null)
-                                              //   Column(
-                                              //     children: [
-                                              //       LinearPercentIndicator(
-                                              //         padding:
-                                              //             EdgeInsets.all(8),
-                                              //         curve: Curves.easeIn,
-                                              //         width: 150.0,
-                                              //         animation: true,
-                                              //         animationDuration: 2000,
-                                              //         lineHeight: 8.0,
-                                              //         percent: (_progressCalculator(
-                                              //                 _pendingTask[
-                                              //                         index]
-                                              //                     .measurables) /
-                                              //             100),
-                                              //         linearStrokeCap:
-                                              //             LinearStrokeCap
-                                              //                 .roundAll,
-                                              //         progressColor: (_percentage <=
-                                              //                 30)
-                                              //             ? barColors['red']
-                                              //             : (_percentage <= 50)
-                                              //                 ? barColors[
-                                              //                     'yellow']
-                                              //                 : (_percentage <=
-                                              //                         80)
-                                              //                     ? barColors[
-                                              //                         'yellowish']
-                                              //                     : (_percentage <=
-                                              //                             99)
-                                              //                         ? barColors[
-                                              //                             'greenish']
-                                              //                         : barColors[
-                                              //                             'green'],
-                                              //       ),
-                                              //       Divider(
-                                              //         height: 7,
-                                              //       ),
-                                              //     ],
-                                              //   ),
+                                              if (_pendingTask[index]
+                                                      .progressType ==
+                                                  'Definite')
+                                                Text(
+                                                  _pendingTask[index].isFinished
+                                                      ? 'Done'
+                                                      : 'Not yet done',
+                                                  style: GoogleFonts.ubuntu(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: _pendingTask[index]
+                                                            .isFinished
+                                                        ? Theme.of(context)
+                                                            .primaryColor
+                                                        : Colors.red,
+                                                  ),
+                                                ),
+                                              if (_pendingTask[index]
+                                                      .progressType ==
+                                                  'Gradual')
+                                                Column(
+                                                  children: [
+                                                    LinearPercentIndicator(
+                                                      padding:
+                                                          EdgeInsets.all(8),
+                                                      curve: Curves.easeIn,
+                                                      width: 150.0,
+                                                      animation: true,
+                                                      animationDuration: 2000,
+                                                      lineHeight: 8.0,
+                                                      percent:
+                                                          forIndicator != null
+                                                              ? forIndicator
+                                                              : 0.0,
+                                                      linearStrokeCap:
+                                                          LinearStrokeCap
+                                                              .roundAll,
+                                                      progressColor: (_percentage ==
+                                                              null)
+                                                          ? barColors['red']
+                                                          : (_percentage <= 30)
+                                                              ? barColors['red']
+                                                              : (_percentage <=
+                                                                      50)
+                                                                  ? barColors[
+                                                                      'yellow']
+                                                                  : (_percentage <=
+                                                                          80)
+                                                                      ? barColors[
+                                                                          'yellowish']
+                                                                      : (_percentage <=
+                                                                              99)
+                                                                          ? barColors[
+                                                                              'greenish']
+                                                                          : barColors[
+                                                                              'green'],
+                                                    ),
+                                                    Divider(
+                                                      height: 7,
+                                                    ),
+                                                  ],
+                                                ),
                                               Row(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment

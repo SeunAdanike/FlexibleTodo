@@ -19,6 +19,7 @@ class AllTask extends StatefulWidget {
 class _AllTaskState extends State<AllTask> {
   List _taskList = List<Task>();
   DatabaseManager _databaseManager = DatabaseManager();
+  
   void _getAllValues() async {
     _taskList = List<Task>();
     var tasks = await _databaseManager.getAllTask();
