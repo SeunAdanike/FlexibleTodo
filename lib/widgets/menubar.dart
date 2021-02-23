@@ -153,6 +153,7 @@ class _MenuBarState extends State<MenuBar> {
                       : Theme.of(context).primaryColorLight,
                 ),
                 onPressed: () {
+                  widget.sizeSetting = 30;
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => Settings(),

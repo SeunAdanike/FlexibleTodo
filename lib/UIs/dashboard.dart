@@ -102,19 +102,22 @@ class _DashState extends State<Dash> {
   @override
   void initState() {
     String toDayDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    _pendingTask = List<Task>();
+    _dueToday = List<Task>();
     _getAllTasks().then((_) {
       for (int i = 0; i < _taskList.length; i++) {
         if (_taskList[i].isFinished == false) _pendingTask.add(_taskList[i]);
         if (_taskList[i].todoDueDate == toDayDate) _dueToday.add(_taskList[i]);
       }
-      int startBarDate = _searchId.reduce(min);
-      _enrolDate = DateFormat('yyyy-MM-dd')
-          .format(DateTime.fromMillisecondsSinceEpoch(startBarDate));
-      DateTime _enrolDateConvert = DateTime.parse(_enrolDate);
-      _differenceInDate = _todaysDate.difference(_enrolDateConvert).inDays;
+      if (_searchId.isNotEmpty) {
+        int startBarDate = _searchId.reduce(min);
+        _enrolDate = DateFormat('yyyy-MM-dd')
+            .format(DateTime.fromMillisecondsSinceEpoch(startBarDate));
+        DateTime _enrolDateConvert = DateTime.parse(_enrolDate);
+        _differenceInDate = _todaysDate.difference(_enrolDateConvert).inDays;
+      }
     });
     _getAllMeasurables();
-
     super.initState();
   }
 
@@ -229,12 +232,19 @@ class _DashState extends State<Dash> {
                                 //shrinkWrap: true,
                                 itemBuilder: (context, index) {
                                   if (_taskList == null || _taskList.isEmpty)
-                                    return Center(
-                                      child: AutoSizeText(
-                                          'You haven\'t added any task',
-                                          style: GoogleFonts.ubuntu(
-                                            fontSize: 25,
-                                          )),
+                                    return Padding(
+                                      padding: EdgeInsets.only(
+                                              left: MediaQuery.of(context)
+                                                  .size
+                                                  .width) *
+                                          0.1,
+                                      child: Center(
+                                        child: AutoSizeText(
+                                            'You haven\'t added any task yet',
+                                            style: GoogleFonts.ubuntu(
+                                              fontSize: 20,
+                                            )),
+                                      ),
                                     );
                                   int _finished = 0, _due = 0;
                                   if (_enrolDate == null)
@@ -354,299 +364,336 @@ class _DashState extends State<Dash> {
                             ),
                             Container(
                               height: MediaQuery.of(context).size.height * 0.23,
-                              child: ListView.builder(
-                                itemBuilder: (context, index) {
-                                  double forIndicator;
-                                  for (int i = 0;
-                                      i < _measurablesList.length;
-                                      i++) {
-                                    if (_measurablesList[i].id ==
-                                        _pendingTask[index].id) {
-                                      forIndicator = (_progressCalculator(
-                                              _measurablesList[i]
-                                                  .measurables)) /
-                                          100;
-                                    }
-                                  }
-
-                                  return InkWell(
-                                    onTap: () {
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              TodoDetailsScreen(
-                                            task: _pendingTask[index],
-                                          ),
+                              child: _pendingTask.isEmpty
+                                  ? Center(
+                                      child: Text(
+                                        'You do not have any pending task yet',
+                                        style: GoogleFonts.ubuntu(
+                                          fontSize: 20,
+                                          color: Colors.white,
                                         ),
-                                      );
-                                    },
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
-                                        top: 8.0,
-                                        right: 8.0,
-                                        bottom: 8.0,
                                       ),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(10))),
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.15,
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.45,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Column(
-                                            children: [
-                                              AutoSizeText(
-                                                _pendingTask[index].title,
-                                                maxLines: 2,
-                                                textAlign: TextAlign.center,
-                                                style: GoogleFonts.ubuntu(
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.w600,
+                                    )
+                                  : ListView.builder(
+                                      itemBuilder: (context, index) {
+                                        double forIndicator;
+                                        for (int i = 0;
+                                            i < _measurablesList.length;
+                                            i++) {
+                                          if (_measurablesList[i].id ==
+                                              _pendingTask[index].id) {
+                                            forIndicator = (_progressCalculator(
+                                                    _measurablesList[i]
+                                                        .measurables)) /
+                                                100;
+                                          }
+                                        }
+
+                                        return InkWell(
+                                          onTap: () {
+                                            Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    TodoDetailsScreen(
+                                                  task: _pendingTask[index],
                                                 ),
                                               ),
-                                              Divider(
-                                                height: 5,
-                                              ),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceAround,
-                                                children: [
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceAround,
-                                                    children: [
-                                                      Icon(
-                                                        Icons.category_outlined,
-                                                        size: 15,
-                                                        color: Theme.of(context)
-                                                            .primaryColor,
+                                            );
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                              top: 8.0,
+                                              right: 8.0,
+                                              bottom: 8.0,
+                                            ),
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(10))),
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.15,
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.45,
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Column(
+                                                  children: [
+                                                    AutoSizeText(
+                                                      _pendingTask[index].title,
+                                                      maxLines: 2,
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: GoogleFonts.ubuntu(
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.w600,
                                                       ),
-                                                      SizedBox(
-                                                        width: 4,
-                                                      ),
+                                                    ),
+                                                    Divider(
+                                                      height: 5,
+                                                    ),
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceAround,
+                                                      children: [
+                                                        Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceAround,
+                                                          children: [
+                                                            Icon(
+                                                              Icons
+                                                                  .category_outlined,
+                                                              size: 15,
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .primaryColor,
+                                                            ),
+                                                            SizedBox(
+                                                              width: 4,
+                                                            ),
+                                                            Text(
+                                                              'Category: ',
+                                                              style: GoogleFonts
+                                                                  .ubuntu(
+                                                                fontSize: 14,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        AutoSizeText(
+                                                          _pendingTask[index]
+                                                              .category,
+                                                          style: GoogleFonts
+                                                              .ubuntu(
+                                                            fontSize: 15,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                    Divider(
+                                                      height: 5,
+                                                    ),
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceAround,
+                                                      children: [
+                                                        Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceAround,
+                                                          children: [
+                                                            Icon(
+                                                              Icons
+                                                                  .calendar_today_outlined,
+                                                              size: 14,
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .primaryColor,
+                                                            ),
+                                                            SizedBox(
+                                                              width: 4,
+                                                            ),
+                                                            AutoSizeText(
+                                                              'Start Date:  ',
+                                                              maxLines: 1,
+                                                              style: GoogleFonts
+                                                                  .ubuntu(
+                                                                fontSize: 13,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        AutoSizeText(
+                                                          _pendingTask[index]
+                                                              .todoStartDate,
+                                                          maxLines: 1,
+                                                          style: GoogleFonts
+                                                              .ubuntu(
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                    Divider(
+                                                      height: 5,
+                                                    ),
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceAround,
+                                                      children: [
+                                                        Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceAround,
+                                                          children: [
+                                                            Icon(
+                                                              Icons
+                                                                  .calendar_today,
+                                                              size: 14,
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .primaryColor,
+                                                            ),
+                                                            SizedBox(
+                                                              width: 4,
+                                                            ),
+                                                            AutoSizeText(
+                                                              'Due Date:  ',
+                                                              maxLines: 1,
+                                                              style: GoogleFonts
+                                                                  .ubuntu(
+                                                                fontSize: 13,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        AutoSizeText(
+                                                          _pendingTask[index]
+                                                              .todoDueDate,
+                                                          maxLines: 1,
+                                                          style: GoogleFonts
+                                                              .ubuntu(
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                    Divider(
+                                                      height: 5,
+                                                    ),
+                                                    if (_pendingTask[index]
+                                                            .progressType ==
+                                                        'Definite')
                                                       Text(
-                                                        'Category: ',
+                                                        _pendingTask[index]
+                                                                .isFinished
+                                                            ? 'Done'
+                                                            : 'Not yet done',
                                                         style:
                                                             GoogleFonts.ubuntu(
                                                           fontSize: 14,
                                                           fontWeight:
-                                                              FontWeight.w400,
+                                                              FontWeight.w600,
+                                                          color: _pendingTask[
+                                                                      index]
+                                                                  .isFinished
+                                                              ? Theme.of(
+                                                                      context)
+                                                                  .primaryColor
+                                                              : Colors.red,
                                                         ),
                                                       ),
-                                                    ],
-                                                  ),
-                                                  AutoSizeText(
-                                                    _pendingTask[index]
-                                                        .category,
-                                                    style: GoogleFonts.ubuntu(
-                                                      fontSize: 15,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-                                              Divider(
-                                                height: 5,
-                                              ),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceAround,
-                                                children: [
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceAround,
-                                                    children: [
-                                                      Icon(
-                                                        Icons
-                                                            .calendar_today_outlined,
-                                                        size: 14,
-                                                        color: Theme.of(context)
-                                                            .primaryColor,
+                                                    if (_pendingTask[index]
+                                                            .progressType ==
+                                                        'Gradual')
+                                                      Column(
+                                                        children: [
+                                                          LinearPercentIndicator(
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    8),
+                                                            curve:
+                                                                Curves.easeIn,
+                                                            width: 150.0,
+                                                            animation: true,
+                                                            animationDuration:
+                                                                2000,
+                                                            lineHeight: 8.0,
+                                                            percent:
+                                                                forIndicator !=
+                                                                        null
+                                                                    ? forIndicator
+                                                                    : 0.0,
+                                                            linearStrokeCap:
+                                                                LinearStrokeCap
+                                                                    .roundAll,
+                                                            progressColor: (_percentage ==
+                                                                    null)
+                                                                ? barColors[
+                                                                    'red']
+                                                                : (_percentage <=
+                                                                        30)
+                                                                    ? barColors[
+                                                                        'red']
+                                                                    : (_percentage <=
+                                                                            50)
+                                                                        ? barColors[
+                                                                            'yellow']
+                                                                        : (_percentage <=
+                                                                                80)
+                                                                            ? barColors['yellowish']
+                                                                            : (_percentage <= 99)
+                                                                                ? barColors['greenish']
+                                                                                : barColors['green'],
+                                                          ),
+                                                          Divider(
+                                                            height: 7,
+                                                          ),
+                                                        ],
                                                       ),
-                                                      SizedBox(
-                                                        width: 4,
-                                                      ),
-                                                      AutoSizeText(
-                                                        'Start Date:  ',
-                                                        maxLines: 1,
-                                                        style:
-                                                            GoogleFonts.ubuntu(
-                                                          fontSize: 13,
-                                                          fontWeight:
-                                                              FontWeight.w400,
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceAround,
+                                                      children: [
+                                                        Text(
+                                                          'Progress Type: ',
+                                                          style: GoogleFonts
+                                                              .ubuntu(
+                                                            fontSize: 13,
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                          ),
                                                         ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  AutoSizeText(
-                                                    _pendingTask[index]
-                                                        .todoStartDate,
-                                                    maxLines: 1,
-                                                    style: GoogleFonts.ubuntu(
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-                                              Divider(
-                                                height: 5,
-                                              ),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceAround,
-                                                children: [
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceAround,
-                                                    children: [
-                                                      Icon(
-                                                        Icons.calendar_today,
-                                                        size: 14,
-                                                        color: Theme.of(context)
-                                                            .primaryColor,
-                                                      ),
-                                                      SizedBox(
-                                                        width: 4,
-                                                      ),
-                                                      AutoSizeText(
-                                                        'Due Date:  ',
-                                                        maxLines: 1,
-                                                        style:
-                                                            GoogleFonts.ubuntu(
-                                                          fontSize: 13,
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  AutoSizeText(
-                                                    _pendingTask[index]
-                                                        .todoDueDate,
-                                                    maxLines: 1,
-                                                    style: GoogleFonts.ubuntu(
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-                                              Divider(
-                                                height: 5,
-                                              ),
-                                              if (_pendingTask[index]
-                                                      .progressType ==
-                                                  'Definite')
-                                                Text(
-                                                  _pendingTask[index].isFinished
-                                                      ? 'Done'
-                                                      : 'Not yet done',
-                                                  style: GoogleFonts.ubuntu(
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.w600,
-                                                    color: _pendingTask[index]
-                                                            .isFinished
-                                                        ? Theme.of(context)
-                                                            .primaryColor
-                                                        : Colors.red,
-                                                  ),
-                                                ),
-                                              if (_pendingTask[index]
-                                                      .progressType ==
-                                                  'Gradual')
-                                                Column(
-                                                  children: [
-                                                    LinearPercentIndicator(
-                                                      padding:
-                                                          EdgeInsets.all(8),
-                                                      curve: Curves.easeIn,
-                                                      width: 150.0,
-                                                      animation: true,
-                                                      animationDuration: 2000,
-                                                      lineHeight: 8.0,
-                                                      percent:
-                                                          forIndicator != null
-                                                              ? forIndicator
-                                                              : 0.0,
-                                                      linearStrokeCap:
-                                                          LinearStrokeCap
-                                                              .roundAll,
-                                                      progressColor: (_percentage ==
-                                                              null)
-                                                          ? barColors['red']
-                                                          : (_percentage <= 30)
-                                                              ? barColors['red']
-                                                              : (_percentage <=
-                                                                      50)
-                                                                  ? barColors[
-                                                                      'yellow']
-                                                                  : (_percentage <=
-                                                                          80)
-                                                                      ? barColors[
-                                                                          'yellowish']
-                                                                      : (_percentage <=
-                                                                              99)
-                                                                          ? barColors[
-                                                                              'greenish']
-                                                                          : barColors[
-                                                                              'green'],
-                                                    ),
-                                                    Divider(
-                                                      height: 7,
-                                                    ),
+                                                        Text(
+                                                          _pendingTask[index]
+                                                              .progressType,
+                                                          style: GoogleFonts
+                                                              .ubuntu(
+                                                            fontSize: 15,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          ),
+                                                        )
+                                                      ],
+                                                    )
                                                   ],
                                                 ),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceAround,
-                                                children: [
-                                                  Text(
-                                                    'Progress Type: ',
-                                                    style: GoogleFonts.ubuntu(
-                                                      fontSize: 13,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    _pendingTask[index]
-                                                        .progressType,
-                                                    style: GoogleFonts.ubuntu(
-                                                      fontSize: 15,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                    ),
-                                                  )
-                                                ],
-                                              )
-                                            ],
+                                              ),
+                                            ),
                                           ),
-                                        ),
-                                      ),
+                                        );
+                                      },
+                                      itemCount: _pendingTask.length,
+                                      scrollDirection: Axis.horizontal,
+                                      shrinkWrap: true,
                                     ),
-                                  );
-                                },
-                                itemCount: _pendingTask.length,
-                                scrollDirection: Axis.horizontal,
-                                shrinkWrap: true,
-                              ),
                             ),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -658,49 +705,64 @@ class _DashState extends State<Dash> {
                                     fontSize: 24,
                                   ),
                                 ),
-                                ListView.builder(
-                                  padding: EdgeInsets.zero,
-                                  itemBuilder: (context, index) {
-                                    return ListTile(
-                                      onTap: () {
-                                        Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                TodoDetailsScreen(
-                                              task: _dueToday[index],
+                                _dueToday.isEmpty
+                                    ? Center(
+                                        child: Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 18.0),
+                                          child: Text(
+                                            'There is no task due for today',
+                                            style: GoogleFonts.ubuntu(
+                                              fontSize: 20,
+                                              color: Colors.white,
                                             ),
                                           ),
-                                        );
-                                      },
-                                      dense: false,
-                                      contentPadding: EdgeInsets.zero,
-                                      visualDensity: VisualDensity(
-                                          horizontal: 0, vertical: -4),
-                                      title: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text(
-                                          _dueToday[index].title,
-                                          softWrap: true,
-                                          style: GoogleFonts.ubuntu(
-                                              fontSize: 17,
-                                              color: Colors.white),
                                         ),
-                                      ),
-                                      leading: _dueToday[index].isFinished
-                                          ? Icon(
-                                              Icons.check_box_outlined,
-                                              color: Colors.white,
-                                            )
-                                          : Icon(
-                                              Icons
-                                                  .check_box_outline_blank_sharp,
-                                              color: Colors.white,
+                                      )
+                                    : ListView.builder(
+                                        padding: EdgeInsets.zero,
+                                        itemBuilder: (context, index) {
+                                          return ListTile(
+                                            onTap: () {
+                                              Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      TodoDetailsScreen(
+                                                    task: _dueToday[index],
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                            dense: false,
+                                            contentPadding: EdgeInsets.zero,
+                                            visualDensity: VisualDensity(
+                                                horizontal: 0, vertical: -4),
+                                            title: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Text(
+                                                _dueToday[index].title,
+                                                softWrap: true,
+                                                style: GoogleFonts.ubuntu(
+                                                    fontSize: 17,
+                                                    color: Colors.white),
+                                              ),
                                             ),
-                                    );
-                                  },
-                                  itemCount: _dueToday.length,
-                                  shrinkWrap: true,
-                                )
+                                            leading: _dueToday[index].isFinished
+                                                ? Icon(
+                                                    Icons.check_box_outlined,
+                                                    color: Colors.white,
+                                                  )
+                                                : Icon(
+                                                    Icons
+                                                        .check_box_outline_blank_sharp,
+                                                    color: Colors.white,
+                                                  ),
+                                          );
+                                        },
+                                        itemCount: _dueToday.length,
+                                        shrinkWrap: true,
+                                      )
                               ],
                             )
                           ],

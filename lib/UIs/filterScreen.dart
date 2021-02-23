@@ -1,5 +1,5 @@
 import 'package:flexibletodo/UIs/details.dart';
-import 'package:flexibletodo/models/dummyTask.dart';
+import 'package:flexibletodo/connections.dart/database_management.dart';
 import 'package:flexibletodo/models/task.dart';
 import 'package:flexibletodo/widgets/drawer.dart';
 import 'package:flexibletodo/widgets/edgeDesign.dart';
@@ -15,29 +15,59 @@ class FilterHelper extends StatefulWidget {
 }
 
 class _FilterHelperState extends State<FilterHelper> {
-  List<Task> _alltask = List<Task>();
   List<Task> _fetchedTask = List<Task>();
-  List<Task> _categoriesTask = List<Task>();
+
+  List _taskList = List<Task>();
+
+  DatabaseManager _databaseManager = DatabaseManager();
+
+  _getAllValues() async {
+    _taskList = List<Task>();
+    var tasks = await _databaseManager.getAllTask();
+    tasks.forEach((task) {
+      setState(() {
+        bool _isFinished;
+        task['taskFinished'].toLowerCase() == 'true'
+            ? _isFinished = true
+            : _isFinished = false;
+
+        Task taskModel = Task();
+        taskModel.id = task['id'];
+        taskModel.title = task['taskTitle'];
+        taskModel.category = task['taskCategory'];
+        taskModel.todoStartDate = task['taskStartDate'];
+        taskModel.todoFinishedDate = task['taskFinishedDate'];
+        taskModel.progressType = task['taskProgressType'];
+        taskModel.todoDueDate = task['taskDueDate'];
+        taskModel.reminder = task['taskRemainder'];
+        taskModel.description = task['taskDescription'];
+        taskModel.isFinished = _isFinished;
+        _taskList.add(taskModel);
+      });
+    });
+  }
 
   _placeGetter() {
-    _alltask = DUMMY_TASK.toList();
-    for (int i = 0; i < _alltask.length; i++) {
+    for (int i = 0; i < _taskList.length; i++) {
       if (widget.field == 'Pending') {
-        if (!_alltask[i].isFinished) _fetchedTask.add(_alltask[i]);
+        if (!_taskList[i].isFinished) _fetchedTask.add(_taskList[i]);
       }
       if (widget.field == 'Completed') {
-        if (_alltask[i].isFinished) _fetchedTask.add(_alltask[i]);
+        if (_taskList[i].isFinished) _fetchedTask.add(_taskList[i]);
       }
-      if (_alltask[i].category == widget.field)
+      if (_taskList[i].category == widget.field)
         _fetchedTask.add(
-          _alltask[i],
+          _taskList[i],
         );
     }
   }
 
   @override
   void initState() {
-    _placeGetter();
+    _getAllValues().then((_) {
+      _placeGetter();
+    });
+
     super.initState();
   }
 

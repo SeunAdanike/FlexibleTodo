@@ -73,6 +73,12 @@ class DatabaseManager {
     return await connector.rawDelete('DELETE FROM $table WHERE id = $itemId');
   }
 
+  deleteMeasures(itemId) async {
+    Database connector = await database;
+    return await connector
+        .rawDelete('DELETE FROM $measurableTable WHERE id = $itemId');
+  }
+
   getByValue(String valueFieldName, String columnValue) async {
     Database connector = await database;
     return await connector

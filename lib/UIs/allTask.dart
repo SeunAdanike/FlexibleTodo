@@ -17,9 +17,78 @@ class AllTask extends StatefulWidget {
 }
 
 class _AllTaskState extends State<AllTask> {
-  List _taskList = List<Task>();
+  List<Task> _taskList = List<Task>();
   DatabaseManager _databaseManager = DatabaseManager();
-  
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  _showSnackBar(message) {
+    var _snackBar = SnackBar(
+      content: message,
+    );
+    _scaffoldKey.currentState.showSnackBar(_snackBar);
+  }
+
+  _comfirmationDialog(BuildContext context, Task task) {
+    return showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (value) {
+        return AlertDialog(
+            actionsPadding: EdgeInsets.all(10),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20))),
+            title: Center(child: Text('Delete Confirmation')),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text('Are you sure you want to delete the task?',
+                    softWrap: true,
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.ubuntu(
+                      fontSize: 20,
+                      color: Colors.black,
+                    )),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    FlatButton(
+                      onPressed: () async {
+                        var result = await _databaseManager.delete(task.id);
+                        if (task.progressType == 'Gradual') {
+                          await _databaseManager.deleteMeasures(task.id);
+                        }
+                        if (result > 0) {
+                          _showSnackBar(Text('Task is successfully deleted'));
+                        }
+                        Navigator.pop(context);
+
+                        setState(() {
+                          _getAllValues();
+                        });
+                      },
+                      child: Text('Delete',
+                          style: GoogleFonts.ubuntu(
+                            fontSize: 18,
+                            color: Colors.red,
+                          )),
+                    ),
+                    FlatButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text('Cancel',
+                          style: GoogleFonts.ubuntu(
+                            fontSize: 18,
+                            color: Colors.black,
+                          )),
+                    ),
+                  ],
+                ),
+              ],
+            ));
+      },
+    );
+  }
+
   void _getAllValues() async {
     _taskList = List<Task>();
     var tasks = await _databaseManager.getAllTask();
@@ -55,6 +124,7 @@ class _AllTaskState extends State<AllTask> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       drawer: AppDrawer(),
       extendBody: true,
       bottomNavigationBar: MenuBar(
@@ -247,19 +317,25 @@ class _AllTaskState extends State<AllTask> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceAround,
                                     children: [
-                                      Row(children: [
-                                        Text(
-                                          'Delete',
-                                          style: GoogleFonts.ubuntu(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w400,
+                                      InkWell(
+                                        onTap: () async {
+                                          _comfirmationDialog(
+                                              context, _taskList[index]);
+                                        },
+                                        child: Row(children: [
+                                          Text(
+                                            'Delete',
+                                            style: GoogleFonts.ubuntu(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w400,
+                                            ),
                                           ),
-                                        ),
-                                        Icon(
-                                          Icons.delete_outline,
-                                          color: Colors.red,
-                                        ),
-                                      ]),
+                                          Icon(
+                                            Icons.delete_outline,
+                                            color: Colors.red,
+                                          ),
+                                        ]),
+                                      ),
                                       Row(children: [
                                         Text(
                                           'Edit',
