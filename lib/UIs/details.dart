@@ -10,6 +10,7 @@ import 'package:flexibletodo/widgets/menubar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class TodoDetailsScreen extends StatefulWidget {
@@ -56,7 +57,6 @@ class _TodoDetailsScreenState extends State<TodoDetailsScreen> {
         measuresFetched.isTicked = _isTick;
         measuresFetched.measurables = _measureMap;
         measurablesList.add(measuresFetched);
-        print(measurablesList[0].measurables.values);
       });
     });
   }
@@ -82,6 +82,7 @@ class _TodoDetailsScreenState extends State<TodoDetailsScreen> {
 
   @override
   void initState() {
+    _isDone = _task.isFinished;
     _getMeasuresbyId().then((_) {
       _percentCal();
     });
@@ -359,7 +360,6 @@ class _TodoDetailsScreenState extends State<TodoDetailsScreen> {
                                                         _task.isFinished =
                                                             _isDone;
                                                       });
-                                                      print(_isDone);
                                                     },
                                                     icon: Icon(
                                                       _isDone
@@ -578,9 +578,40 @@ class _TodoDetailsScreenState extends State<TodoDetailsScreen> {
                                     shape: StadiumBorder(),
                                     color: Theme.of(context).primaryColor,
                                     onPressed: () async {
+                                      setState(() {
+                                        _percentCal();
+                                        if (_task.progressType == 'Gradual') {
+                                          if (percent >= 1) {
+                                            _task.isFinished = true;
+                                            _task.todoFinishedDate =
+                                                DateFormat('yyyy-MM-dd').format(
+                                              DateTime.now(),
+                                            );
+                                          } else {
+                                            _task.isFinished = false;
+                                            _task.todoFinishedDate = null;
+                                          }
+                                        }
+                                        if (_task.progressType == 'Definite') {
+                                          if (_isDone) {
+                                            _task.isFinished = true;
+                                            _task.todoFinishedDate =
+                                                DateFormat('yyyy-MM-dd').format(
+                                              DateTime.now(),
+                                            );
+                                          } else {
+                                            _task.isFinished = false;
+                                            _task.todoFinishedDate = null;
+                                          }
+                                        }
+                                      });
+                                      if (_task.progressType == 'Gradual') {
+                                        await _databaseManager.updateMeasurable(
+                                            measurablesList[0].toMap());
+                                      }
+
                                       var result = await _databaseManager
-                                          .updateMeasurable(
-                                              measurablesList[0].toMap());
+                                          .update(_task.taskMap());
                                       if (result > 0) {
                                         _showSnackBar(
                                             Text('Update Successful'));

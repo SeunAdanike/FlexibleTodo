@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flexibletodo/UIs/details.dart';
@@ -26,7 +27,7 @@ class _DashState extends State<Dash> {
   int _done;
   int _percentage;
   List<Task> _dueToday = List<Task>();
-  String _enrolDate = '2021-02-10';
+  String _enrolDate;
   Measurables measuresFetched;
 
   DateTime _todaysDate = DateTime.now();
@@ -47,7 +48,8 @@ class _DashState extends State<Dash> {
     return _percentage;
   }
 
-  List _taskList = List<Task>();
+  List<int> _searchId = List<int>();
+  List<Task> _taskList = List<Task>();
   List<Measurables> _measurablesList = List<Measurables>();
   var _databaseManager = DatabaseManager();
 
@@ -92,6 +94,7 @@ class _DashState extends State<Dash> {
         taskModel.description = task['taskDescription'];
         taskModel.isFinished = _isFinished;
         _taskList.add(taskModel);
+        _searchId.add(task['id']);
       });
     });
   }
@@ -104,6 +107,9 @@ class _DashState extends State<Dash> {
         if (_taskList[i].isFinished == false) _pendingTask.add(_taskList[i]);
         if (_taskList[i].todoDueDate == toDayDate) _dueToday.add(_taskList[i]);
       }
+      int startBarDate = _searchId.reduce(min);
+      _enrolDate = DateFormat('yyyy-MM-dd')
+          .format(DateTime.fromMillisecondsSinceEpoch(startBarDate));
       DateTime _enrolDateConvert = DateTime.parse(_enrolDate);
       _differenceInDate = _todaysDate.difference(_enrolDateConvert).inDays;
     });
@@ -222,26 +228,48 @@ class _DashState extends State<Dash> {
                               child: ListView.builder(
                                 //shrinkWrap: true,
                                 itemBuilder: (context, index) {
+                                  if (_taskList == null || _taskList.isEmpty)
+                                    return Center(
+                                      child: AutoSizeText(
+                                          'You haven\'t added any task',
+                                          style: GoogleFonts.ubuntu(
+                                            fontSize: 25,
+                                          )),
+                                    );
                                   int _finished = 0, _due = 0;
+                                  if (_enrolDate == null)
+                                    return Center(
+                                        child: CircularProgressIndicator());
                                   DateTime _barDate = DateTime.parse(_enrolDate)
                                       .add(Duration(days: index));
 
                                   String _showDateOnBar = DateFormat.MMMd()
                                       .format(
                                           DateTime.parse(_barDate.toString()));
+
                                   String _showDayOnBar = DateFormat.E().format(
                                       DateTime.parse(_barDate.toString()));
 
-                                  String _compBarDate = DateFormat.yMMMd()
-                                      .format(
-                                          DateTime.parse(_barDate.toString()));
+                                  String _compBarDate =
+                                      DateFormat('yyyy-MM-dd').format(_barDate);
 
-                                  double _total = 79;
+                                  for (int i = 0; i < _taskList.length; i++) {
+                                    if (_compBarDate ==
+                                        _taskList[i].todoDueDate) _due++;
+
+                                    if (_compBarDate ==
+                                        _taskList[i]
+                                            .todoDueDate) if (_taskList[i]
+                                        .isFinished) _finished++;
+                                  }
+
+                                  int _total =
+                                      ((_finished / _due) * 100).ceil();
 
                                   return Padding(
                                     padding: const EdgeInsets.only(
-                                      right: 18.0,
-                                      left: 18.0,
+                                      right: 12.0,
+                                      left: 12.0,
                                     ),
                                     child: Column(
                                       mainAxisAlignment:
@@ -624,7 +652,7 @@ class _DashState extends State<Dash> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Task due today',
+                                  'Tasks due today',
                                   style: GoogleFonts.ubuntu(
                                     color: Colors.white,
                                     fontSize: 24,
@@ -635,7 +663,14 @@ class _DashState extends State<Dash> {
                                   itemBuilder: (context, index) {
                                     return ListTile(
                                       onTap: () {
-                                        setState(() {});
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                TodoDetailsScreen(
+                                              task: _dueToday[index],
+                                            ),
+                                          ),
+                                        );
                                       },
                                       dense: false,
                                       contentPadding: EdgeInsets.zero,
