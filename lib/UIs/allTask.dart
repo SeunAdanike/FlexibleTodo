@@ -1,8 +1,7 @@
-import 'dart:convert';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flexibletodo/UIs/details.dart';
 import 'package:flexibletodo/connections.dart/database_management.dart';
+import 'package:flexibletodo/main.dart';
 
 import 'package:flexibletodo/models/task.dart';
 import 'package:flexibletodo/widgets/drawer.dart';
@@ -10,6 +9,7 @@ import 'package:flexibletodo/widgets/edgeDesign.dart';
 import 'package:flexibletodo/widgets/menubar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
 class AllTask extends StatefulWidget {
   @override
@@ -20,10 +20,18 @@ class _AllTaskState extends State<AllTask> {
   List<Task> _taskList = List<Task>();
   DatabaseManager _databaseManager = DatabaseManager();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  DateTime pageGreet;
+
+  int hour;
+
+  int minute;
+
   _showSnackBar(message) {
     var _snackBar = SnackBar(
       content: message,
     );
+    _scaffoldKey.currentState.removeCurrentSnackBar();
     _scaffoldKey.currentState.showSnackBar(_snackBar);
   }
 
@@ -52,7 +60,15 @@ class _AllTaskState extends State<AllTask> {
                   children: [
                     FlatButton(
                       onPressed: () async {
+                        DateTime saveScheduleTime =
+                            DateTime.fromMillisecondsSinceEpoch(task.id);
+                        int scheduleId = (saveScheduleTime.weekday +
+                            saveScheduleTime.month +
+                            saveScheduleTime.millisecond +
+                            saveScheduleTime.year);
                         var result = await _databaseManager.delete(task.id);
+                        await flutterLocalNotificationsPlugin
+                            .cancel(scheduleId);
                         if (task.progressType == 'Gradual') {
                           await _databaseManager.deleteMeasures(task.id);
                         }
@@ -117,6 +133,9 @@ class _AllTaskState extends State<AllTask> {
 
   @override
   void initState() {
+    pageGreet = DateTime.now();
+    hour = pageGreet.hour;
+    minute = pageGreet.minute;
     _getAllValues();
     super.initState();
   }
@@ -178,14 +197,18 @@ class _AllTaskState extends State<AllTask> {
                           ],
                         ),
                         Text(
-                          'Good morning!',
+                          ((hour >= 0 && hour <= 11) && minute <= 59)
+                              ? 'Good Morning!'
+                              : ((hour > 11 && hour <= 16) && minute <= 59)
+                                  ? 'Good Afternoon!'
+                                  : 'Good Evening!',
                           style: GoogleFonts.ubuntu(
                             color: Colors.white,
                             fontSize: 20,
                           ),
                         ),
                         Text(
-                          '6th February, 2020',
+                          '${DateFormat.yMMMMEEEEd().format(pageGreet)}',
                           style: GoogleFonts.ubuntu(
                             color: Colors.white,
                             fontSize: 17,

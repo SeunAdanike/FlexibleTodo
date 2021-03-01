@@ -5,6 +5,7 @@ import 'package:flexibletodo/widgets/edgeDesign.dart';
 import 'package:flexibletodo/widgets/menubar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
 class Categories extends StatefulWidget {
   @override
@@ -12,6 +13,20 @@ class Categories extends StatefulWidget {
 }
 
 class _CategoriesState extends State<Categories> {
+  DateTime pageGreet;
+
+  int hour;
+
+  int minute;
+
+  @override
+  void initState() {
+    pageGreet = DateTime.now();
+    hour = pageGreet.hour;
+    minute = pageGreet.minute;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,14 +83,18 @@ class _CategoriesState extends State<Categories> {
                           ],
                         ),
                         Text(
-                          'Good morning!',
+                          ((hour >= 0 && hour <= 11) && minute <= 59)
+                              ? 'Good Morning!'
+                              : ((hour > 11 && hour <= 16) && minute <= 59)
+                                  ? 'Good Afternoon!'
+                                  : 'Good Evening!',
                           style: GoogleFonts.ubuntu(
                             color: Colors.white,
                             fontSize: 20,
                           ),
                         ),
                         Text(
-                          '6th February, 2020',
+                          '${DateFormat.yMMMMEEEEd().format(pageGreet)}',
                           style: GoogleFonts.ubuntu(
                             color: Colors.white,
                             fontSize: 17,

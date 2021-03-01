@@ -17,6 +17,7 @@ import 'package:intl/intl.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class Dash extends StatefulWidget {
+  static const String routeName = '/Dash';
   @override
   _DashState createState() => _DashState();
 }
@@ -35,6 +36,12 @@ class _DashState extends State<Dash> {
   var _scrollController = ScrollController();
 
   int _differenceInDate = 0;
+
+  DateTime pageGreet;
+
+  int hour;
+
+  int minute;
 
   int _progressCalculator(Map measurables) {
     _percentage = 0;
@@ -101,7 +108,10 @@ class _DashState extends State<Dash> {
 
   @override
   void initState() {
-    String toDayDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    pageGreet = DateTime.now();
+    hour = pageGreet.hour;
+    minute = pageGreet.minute;
+    String toDayDate = DateFormat('yyyy-MM-dd').format(pageGreet);
     _pendingTask = List<Task>();
     _dueToday = List<Task>();
     _getAllTasks().then((_) {
@@ -178,14 +188,18 @@ class _DashState extends State<Dash> {
                           ],
                         ),
                         Text(
-                          'Good morning!',
+                          ((hour >= 0 && hour <= 11) && minute <= 59)
+                              ? 'Good Morning!'
+                              : ((hour > 11 && hour <= 16) && minute <= 59)
+                                  ? 'Good Afternoon!'
+                                  : 'Good Evening!',
                           style: GoogleFonts.ubuntu(
                             color: Colors.white,
                             fontSize: 20,
                           ),
                         ),
                         Text(
-                          '6th February, 2020',
+                          '${DateFormat.yMMMMEEEEd().format(pageGreet)}',
                           style: GoogleFonts.ubuntu(
                             color: Colors.white,
                             fontSize: 17,
@@ -231,7 +245,7 @@ class _DashState extends State<Dash> {
                               child: ListView.builder(
                                 //shrinkWrap: true,
                                 itemBuilder: (context, index) {
-                                  if (_taskList == null || _taskList.isEmpty)
+                                  if (_taskList == null)
                                     return Padding(
                                       padding: EdgeInsets.only(
                                               left: MediaQuery.of(context)
@@ -247,7 +261,7 @@ class _DashState extends State<Dash> {
                                       ),
                                     );
                                   int _finished = 0, _due = 0;
-                                  if (_enrolDate == null)
+                                  if (_enrolDate == null || _taskList.isEmpty)
                                     return Center(
                                         child: CircularProgressIndicator());
                                   DateTime _barDate = DateTime.parse(_enrolDate)
@@ -272,9 +286,11 @@ class _DashState extends State<Dash> {
                                             .todoDueDate) if (_taskList[i]
                                         .isFinished) _finished++;
                                   }
-
-                                  int _total =
-                                      ((_finished / _due) * 100).ceil();
+                                  int _total;
+                                  _due != 0
+                                      ? _total =
+                                          ((_finished / _due) * 100).ceil()
+                                      : _total = 0;
 
                                   return Padding(
                                     padding: const EdgeInsets.only(

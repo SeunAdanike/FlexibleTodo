@@ -1,7 +1,14 @@
+import 'package:flexibletodo/UIs/dashboard.dart';
+import 'package:flexibletodo/UIs/details.dart';
+import 'package:flexibletodo/UIs/login.dart';
+import 'package:flexibletodo/UIs/signup.dart';
 import 'package:flexibletodo/UIs/welcome.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-void main() {
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+void main() async {
   runApp(MyApp());
 }
 
@@ -18,6 +25,12 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: Welcome(),
+      initialRoute: '/',
+      routes: {
+        '/Login': (context) => Login(),
+        '/Dash': (context) => Dash(),
+        '/Signup': (context) => SignUp()
+      },
     );
   }
 }

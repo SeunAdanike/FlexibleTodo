@@ -4,6 +4,7 @@ import 'package:flexibletodo/widgets/edgeDesign.dart';
 import 'package:flexibletodo/widgets/menubar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
 class Settings extends StatefulWidget {
   @override
@@ -11,14 +12,23 @@ class Settings extends StatefulWidget {
 }
 
 class _SettingsState extends State<Settings> {
+  DateTime pageGreet;
+
+  @override
+  void initState() {
+    pageGreet = DateTime.now();
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: AppDrawer(),
       backgroundColor: Theme.of(context).primaryColor,
       bottomNavigationBar: MenuBar(
-        isSettings: true,
-        sizeSetting: 36,
+        isProfile: true,
+        sizeProfile: 36,
       ),
       body: Stack(
         children: [
@@ -35,7 +45,7 @@ class _SettingsState extends State<Settings> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '6th February 2021',
+                  '${DateFormat.yMMMMEEEEd().format(pageGreet)}',
                   style: GoogleFonts.ubuntu(
                     color: Colors.white,
                     fontSize: 18,

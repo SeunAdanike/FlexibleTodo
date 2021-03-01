@@ -56,6 +56,12 @@ class DatabaseManager {
     return result.toList();
   }
 
+  getByValue(String valueFieldName, String columnValue) async {
+    Database connector = await database;
+    return await connector
+        .query(table, where: '$valueFieldName = ?', whereArgs: [columnValue]);
+  }
+
   update(taskData) async {
     Database connector = await database;
     return await connector
@@ -77,11 +83,5 @@ class DatabaseManager {
     Database connector = await database;
     return await connector
         .rawDelete('DELETE FROM $measurableTable WHERE id = $itemId');
-  }
-
-  getByValue(String valueFieldName, String columnValue) async {
-    Database connector = await database;
-    return await connector
-        .query(table, where: '$valueFieldName = ?', whereArgs: [columnValue]);
   }
 }

@@ -76,8 +76,7 @@ class _WelcomeState extends State<Welcome> {
                 RaisedButton(
                   color: Theme.of(context).primaryColor,
                   onPressed: () {
-                    Navigator.of(context)
-                        .push(MaterialPageRoute(builder: (context) => Login()));
+                    Navigator.of(context).popAndPushNamed('/Signup');
                   },
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(70, 12, 70, 12),

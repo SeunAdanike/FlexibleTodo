@@ -1,4 +1,7 @@
+import 'package:flexibletodo/UIs/dashboard.dart';
+
 import 'package:flexibletodo/connections.dart/database_management.dart';
+import 'package:flexibletodo/main.dart';
 import 'package:flexibletodo/models/categories.dart';
 import 'package:flexibletodo/models/measurables.dart';
 import 'package:flexibletodo/models/task.dart';
@@ -7,6 +10,7 @@ import 'package:flexibletodo/widgets/edgeDesign.dart';
 import 'package:flexibletodo/widgets/menubar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -20,8 +24,9 @@ class _AddTaskState extends State<AddTask> {
   bool isGradual = true;
   String _categoriesHolder;
 
-  DateTime _date = DateTime.now();
+  DateTime _date;
   var _dueDate = TextEditingController();
+  DateTime _combined;
 
   var _clockController = TextEditingController();
 
@@ -33,7 +38,7 @@ class _AddTaskState extends State<AddTask> {
   var _scrollBarController = ScrollController();
   Task newTask;
   Measurables newMeasurables = Measurables();
-  var _selectedTime;
+  TimeOfDay _selectedTime;
   var todaysDate;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _formKey = GlobalKey<FormState>();
@@ -50,12 +55,106 @@ class _AddTaskState extends State<AddTask> {
   }
 
   int genId;
+  int scheduleSec;
+
+  _comfirmationDialog(BuildContext context) {
+    return showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (value) {
+        return AlertDialog(
+            actionsPadding: EdgeInsets.all(10),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20))),
+            title: Center(
+                child: Text('Progress Types',
+                    style: GoogleFonts.ubuntu(
+                      fontWeight: FontWeight.w800,
+                    ))),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                      'Gradual Task are task that are sequential, for example, to prepare pounded yam, \n\n - I have to first peel the yam then\n - I have to cook the yam \n - I pound the cooked yam, \n\nThree measurables',
+                      softWrap: true,
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.ubuntu(
+                        fontSize: 20,
+                        color: Colors.black,
+                      )),
+                  Divider(
+                    thickness: 3,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                  Text(
+                      'Definite Task are one timed task, for example, \n\n - I have to check up on mom',
+                      softWrap: true,
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.ubuntu(
+                        fontSize: 20,
+                      )),
+                  SizedBox(
+                    height: 18,
+                  ),
+                  OutlineButton(
+                    color: Theme.of(context).primaryColor,
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(
+                      'Close',
+                      style: GoogleFonts.ubuntu(
+                          fontSize: 16, color: Theme.of(context).primaryColor),
+                    ),
+                    borderSide: BorderSide(
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    shape: StadiumBorder(),
+                  )
+                ],
+              ),
+            ));
+      },
+    );
+  }
+
+  int minute;
+  int hour;
+  DateTime pageGreet;
 
   @override
   void initState() {
+    pageGreet = DateTime.now();
+    hour = pageGreet.hour;
+    minute = pageGreet.minute;
+    WidgetsFlutterBinding.ensureInitialized();
+    _date = DateTime.now();
+    var initializationSettingsAndroid =
+        AndroidInitializationSettings('picture1');
+    var initializationSettingsIOS = IOSInitializationSettings(
+        requestAlertPermission: true,
+        requestBadgePermission: true,
+        requestSoundPermission: true,
+        onDidReceiveLocalNotification:
+            (int id, String title, String body, String payload) async {});
+
+    final InitializationSettings initializationSettings =
+        InitializationSettings(
+            android: initializationSettingsAndroid,
+            iOS: initializationSettingsIOS);
+
+    flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onSelectNotification: (String payload) async {
+      if (payload != null) {
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => Dash()));
+        debugPrint('notification payload: ' + payload);
+      }
+    });
     _databaseManager = DatabaseManager();
     todaysDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-    _selectedTime = TimeOfDay(hour: 12, minute: 30);
+    _selectedTime = TimeOfDay.now();
     super.initState();
   }
 
@@ -67,8 +166,39 @@ class _AddTaskState extends State<AddTask> {
     return measurestomap;
   }
 
+  Future _setRemainder(Task _remainderDetails) async {
+    DateTime saveScheduleTime =
+        DateTime.fromMillisecondsSinceEpoch(_remainderDetails.id);
+    int scheduleId = (saveScheduleTime.weekday +
+        saveScheduleTime.month +
+        saveScheduleTime.millisecond +
+        saveScheduleTime.year);
+    print(scheduleId);
+    var androidDetails = AndroidNotificationDetails(
+      "Channel ID",
+      "Second Application",
+      "This is the channel for my second app",
+      importance: Importance.max,
+      color: Theme.of(context).primaryColor,
+    );
+    var iOSDetails = IOSNotificationDetails();
+    var generalNotificationDetails =
+        NotificationDetails(android: androidDetails, iOS: iOSDetails);
+    var scheduledTime;
+    scheduledTime = DateTime.now().add(Duration(seconds: scheduleSec));
+    await flutterLocalNotificationsPlugin.schedule(
+        scheduleId,
+        _remainderDetails.title,
+        _remainderDetails.description,
+        scheduledTime,
+        generalNotificationDetails,
+        payload: _remainderDetails.title,
+        androidAllowWhileIdle: true);
+  }
+
   _addTasktoDb() {
     genId = DateTime.now().millisecondsSinceEpoch;
+
     newTask = Task(
       id: genId,
       title: _titleController.text,
@@ -86,7 +216,6 @@ class _AddTaskState extends State<AddTask> {
       newMeasurables.measurables = _measurablesToMap();
       newMeasurables.isTicked = false;
     }
-    print(newTask.id);
   }
 
   _clearFields() {
@@ -97,12 +226,14 @@ class _AddTaskState extends State<AddTask> {
       _clockController.clear();
       _descriptionController.clear();
       _measurable = [];
-
+      _date = DateTime.now();
+      _selectedTime = TimeOfDay.now();
       _dueDate.clear();
     });
   }
 
   _selectDueTime(BuildContext context) async {
+    _selectedTime = TimeOfDay.now();
     var _timePicked = await showTimePicker(
         context: context,
         initialTime: _selectedTime,
@@ -130,7 +261,7 @@ class _AddTaskState extends State<AddTask> {
     var _pickedDate = await showDatePicker(
         context: context,
         initialDate: _date,
-        firstDate: DateTime(2000),
+        firstDate: _date,
         lastDate: DateTime(2099),
         helpText: 'Select the Task due date',
         cancelText: 'Cancel',
@@ -213,14 +344,18 @@ class _AddTaskState extends State<AddTask> {
                             ],
                           ),
                           Text(
-                            'Good morning!',
+                            ((hour >= 0 && hour <= 11) && minute <= 59)
+                                ? 'Good Morning!'
+                                : ((hour > 11 && hour <= 16) && minute <= 59)
+                                    ? 'Good Afternoon!'
+                                    : 'Good Evening!',
                             style: GoogleFonts.ubuntu(
                               color: Colors.white,
                               fontSize: 20,
                             ),
                           ),
                           Text(
-                            '6th February, 2020',
+                            '${DateFormat.yMMMMEEEEd().format(pageGreet)}',
                             style: GoogleFonts.ubuntu(
                               color: Colors.white,
                               fontSize: 17,
@@ -299,6 +434,7 @@ class _AddTaskState extends State<AddTask> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     TextFormField(
+                                      maxLength: 20,
                                       controller: _titleController,
                                       decoration: InputDecoration(
                                         labelText: 'Enter Task Name',
@@ -358,6 +494,9 @@ class _AddTaskState extends State<AddTask> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           InkWell(
+                                            onTap: () {
+                                              _comfirmationDialog(context);
+                                            },
                                             child: Row(
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.center,
@@ -368,7 +507,7 @@ class _AddTaskState extends State<AddTask> {
                                                       fontWeight:
                                                           FontWeight.w400,
                                                       color: Colors.black,
-                                                      fontSize: 17),
+                                                      fontSize: 15),
                                                 ),
                                                 SizedBox(
                                                   width: 10,
@@ -531,7 +670,11 @@ class _AddTaskState extends State<AddTask> {
                                               if (value.isEmpty) {
                                                 return 'Please Enter the Due Date';
                                               }
-                                              return null;
+                                              if (_combined
+                                                  .isBefore(DateTime.now())) {
+                                                return 'Please pick a future time';
+                                              } else
+                                                return null;
                                             },
                                           ),
                                         ),
@@ -560,7 +703,11 @@ class _AddTaskState extends State<AddTask> {
                                               if (value.isEmpty) {
                                                 return 'Please Pick a Time';
                                               }
-                                              return null;
+                                              if (_combined
+                                                  .isBefore(DateTime.now())) {
+                                                return 'Please pick a future time';
+                                              } else
+                                                return null;
                                             },
                                           ),
                                         )
@@ -583,6 +730,7 @@ class _AddTaskState extends State<AddTask> {
                                         if (value.isEmpty) {
                                           return 'Please Enter the Task Description';
                                         }
+
                                         return null;
                                       },
                                     ),
@@ -688,9 +836,22 @@ class _AddTaskState extends State<AddTask> {
                                                 Theme.of(context).primaryColor,
                                             shape: StadiumBorder(),
                                             onPressed: () async {
+                                              _combined = DateTime(
+                                                _date.year,
+                                                _date.month,
+                                                _date.day,
+                                                _selectedTime.hour,
+                                                _selectedTime.minute,
+                                              );
+                                              scheduleSec = _combined
+                                                  .difference(DateTime.now())
+                                                  .inSeconds;
                                               if (_formKey.currentState
                                                   .validate()) {
                                                 _addTasktoDb();
+
+                                                await _setRemainder(newTask);
+
                                                 var addingTask =
                                                     await _databaseManager
                                                         .saveTask(
