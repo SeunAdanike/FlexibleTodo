@@ -199,18 +199,18 @@ class _AddTaskState extends State<AddTask> {
   _addTasktoDb() {
     genId = DateTime.now().millisecondsSinceEpoch;
 
-    newTask = Task(
-      id: genId,
-      title: _titleController.text,
-      category: _categoriesHolder.toString(),
-      progressType: isGradual ? 'Gradual' : 'Definite',
-      todoDueDate: _dueDate.text,
-      reminder: _clockController.text,
-      description: _descriptionController.text,
-      isFinished: false,
-      todoStartDate: todaysDate.toString(),
-      todoFinishedDate: null,
-    );
+    newTask = Task();
+    newTask.id = genId;
+    newTask.title = _titleController.text;
+    newTask.category = _categoriesHolder.toString();
+    newTask.progressType = isGradual ? 'Gradual' : 'Definite';
+    newTask.todoDueDate = _dueDate.text;
+    newTask.reminder = _clockController.text;
+    newTask.description = _descriptionController.text;
+    newTask.isFinished = false;
+    newTask.todoStartDate = todaysDate.toString();
+    newTask.todoFinishedDate = null;
+
     if (isGradual) {
       newMeasurables.id = genId;
       newMeasurables.measurables = _measurablesToMap();

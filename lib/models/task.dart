@@ -14,18 +14,6 @@ class Task {
   bool isFinished;
   String todoStartDate;
 
-  Task({
-    @required this.title,
-    @required this.category,
-    @required this.id,
-    @required this.progressType,
-    @required this.description,
-    @required this.todoStartDate,
-    @required this.todoDueDate,
-    this.todoFinishedDate,
-    @required this.isFinished,
-    @required this.reminder,
-  });
   taskMap() {
     var map = Map<String, dynamic>();
     map['id'] = id;
