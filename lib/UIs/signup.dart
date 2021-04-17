@@ -1,10 +1,13 @@
+import 'package:email_validator/email_validator.dart';
 import 'package:flexibletodo/UIs/addTask.dart';
+import 'package:flexibletodo/connections.dart/database_management.dart';
+import 'package:flexibletodo/models/users.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class SignUp extends StatefulWidget {
-   static const String routeName = '/Signup';
+  static const String routeName = '/Signup';
   @override
   _SignUpState createState() => _SignUpState();
 }
@@ -14,6 +17,8 @@ class _SignUpState extends State<SignUp> {
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _nameController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  DatabaseManager _databaseManager = DatabaseManager();
+  UserDetails _userDetails = UserDetails();
 
   @override
   Widget build(BuildContext context) {
@@ -146,15 +151,18 @@ class _SignUpState extends State<SignUp> {
                           ),
                           hintText: 'Place enter your name',
                         ),
-                        // validator: (value) {
-                        //   if (value.isEmpty) {
-                        //     return 'Please enter some text';
-                        //   }
-                        //   return null;
-                        // },
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Please enter some text';
+                          }
+                          return null;
+                        },
                       ),
                       TextFormField(
                         controller: _emailController,
+                        validator: (value) => EmailValidator.validate(value)
+                            ? null
+                            : "Please enter a valid email",
                         decoration: InputDecoration(
                           labelText: 'Email',
                           labelStyle: GoogleFonts.ubuntu(
@@ -162,29 +170,30 @@ class _SignUpState extends State<SignUp> {
                           ),
                           hintText: 'Enter your registered email address',
                         ),
-                        // validator: (value) {
-                        //   if (value.isEmpty) {
-                        //     return 'Please enter some text';
-                        //   }
-                        //   return null;
-                        // },
                       ),
                       TextFormField(
-                        controller: _passwordController,
-                        decoration: InputDecoration(
-                          labelText: 'Password',
-                          labelStyle: GoogleFonts.ubuntu(
-                            fontWeight: FontWeight.w400,
+                          controller: _passwordController,
+                          decoration: InputDecoration(
+                            labelText: 'Password',
+                            labelStyle: GoogleFonts.ubuntu(
+                              fontWeight: FontWeight.w400,
+                            ),
+                            hintText: 'Enter your Password',
                           ),
-                          hintText: 'Enter your Password',
-                        ),
-                        // validator: (value) {
-                        //   if (value.isEmpty) {
-                        //     return 'Please enter some text';
-                        //   }
-                        //   return null;
-                        // },
-                      ),
+                          validator: (value) {
+                            Pattern pattern =
+                                r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$';
+                            RegExp regex = new RegExp(pattern);
+                            print(value);
+                            if (value.isEmpty) {
+                              return 'Please enter password';
+                            } else {
+                              if (!regex.hasMatch(value))
+                                return 'Enter valid password';
+                              else
+                                return null;
+                            }
+                          }),
                       TextFormField(
                         decoration: InputDecoration(
                           labelText: 'Confirm Password',
@@ -193,12 +202,13 @@ class _SignUpState extends State<SignUp> {
                           ),
                           hintText: 'Enter your Password',
                         ),
-                        // validator: (value) {
-                        //   if (value.isEmpty) {
-                        //     return 'Please enter some text';
-                        //   }
-                        //   return null;
-                        // },
+                        validator: (value) {
+                          if (value.isEmpty) return 'Please Enter a text';
+                          if (value != _passwordController.text) {
+                            return 'it is not the same as password';
+                          }
+                          return null;
+                        },
                       )
                     ],
                   ),
@@ -208,15 +218,24 @@ class _SignUpState extends State<SignUp> {
                 height: 30,
               ),
               Center(
-                child: RaisedButton(
-                  color: Theme.of(context).primaryColor,
-                  onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => AddTask(),
-                    ));
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(100, 12, 100, 12),
+                child: Container(
+                  width: MediaQuery.of(context).size.width * .95,
+                  height: MediaQuery.of(context).size.height * .06,
+                  child: RaisedButton(
+                    color: Theme.of(context).primaryColor,
+                    onPressed: () async {
+                      _userDetails = UserDetails();
+                      _userDetails.id = DateTime.now().millisecondsSinceEpoch;
+                      _userDetails.userName = _nameController.text;
+                      var addingUser = await _databaseManager
+                          .saveDetails(_userDetails.userMap());
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => AddTask(),
+                      ));
+                    },
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
                     child: Text(
                       'Get Started',
                       style: GoogleFonts.ubuntu(
@@ -225,9 +244,6 @@ class _SignUpState extends State<SignUp> {
                         fontWeight: FontWeight.normal,
                       ),
                     ),
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
                   ),
                 ),
               ),

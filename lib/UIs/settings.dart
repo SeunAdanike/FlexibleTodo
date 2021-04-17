@@ -28,7 +28,7 @@ class _SettingsState extends State<Settings> {
       backgroundColor: Theme.of(context).primaryColor,
       bottomNavigationBar: MenuBar(
         isProfile: true,
-        sizeProfile: 36,
+        sizeProfile: 32,
       ),
       body: Stack(
         children: [

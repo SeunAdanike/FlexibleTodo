@@ -16,6 +16,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
         primaryColor: Color(0xFF06748C),
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
         highlightColor: Colors.grey,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: Welcome(),
+      home: Dash(),
       initialRoute: '/',
       routes: {
         '/Login': (context) => Login(),

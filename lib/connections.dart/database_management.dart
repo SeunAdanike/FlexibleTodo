@@ -1,11 +1,13 @@
 import 'package:flexibletodo/connections.dart/database_connection.dart';
-import 'package:flexibletodo/models/measurables.dart';
+
 import 'package:sqflite/sqflite.dart';
 
 class DatabaseManager {
   DatabaseConnections _databaseConnections;
   String table = 'TaskList';
   String measurableTable = 'Measurables';
+  String userDetails = 'UserDetails';
+
   DatabaseManager() {
     _databaseConnections = DatabaseConnections();
   }
@@ -30,6 +32,16 @@ class DatabaseManager {
   saveMeasurables(measurablesAdding) async {
     Database connector = await database;
     return await connector.insert(measurableTable, measurablesAdding);
+  }
+
+  saveDetails(addingUserDetails) async {
+    Database connector = await database;
+    return await connector.insert(userDetails, addingUserDetails);
+  }
+
+  getUsername() async {
+    Database connector = await database;
+    return await connector.query(userDetails);
   }
 
   getAllTask() async {

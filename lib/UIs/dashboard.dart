@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:device_apps/device_apps.dart';
 import 'package:flexibletodo/UIs/details.dart';
 import 'package:flexibletodo/connections.dart/database_management.dart';
 import 'package:flexibletodo/models/colors.dart';
@@ -14,6 +15,7 @@ import 'package:flexibletodo/widgets/menubar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:package_info/package_info.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class Dash extends StatefulWidget {
@@ -38,7 +40,7 @@ class _DashState extends State<Dash> {
   int _differenceInDate = 0;
 
   DateTime pageGreet;
-
+  String _date;
   int hour;
 
   int minute;
@@ -106,6 +108,14 @@ class _DashState extends State<Dash> {
     });
   }
 
+  Future<String> _getInstalledDate() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    Application application = await DeviceApps.getApp(packageInfo.packageName);
+    var getDate =
+        DateTime.fromMillisecondsSinceEpoch(application.installTimeMillis);
+    _date = DateFormat('yyyy-MM-dd').format(getDate);
+  }
+
   @override
   void initState() {
     pageGreet = DateTime.now();
@@ -127,6 +137,7 @@ class _DashState extends State<Dash> {
         _differenceInDate = _todaysDate.difference(_enrolDateConvert).inDays;
       }
     });
+    _getInstalledDate();
     _getAllMeasurables();
     super.initState();
   }
@@ -138,7 +149,7 @@ class _DashState extends State<Dash> {
       drawer: AppDrawer(),
       bottomNavigationBar: MenuBar(
         isHome: true,
-        sizeHome: 36,
+        sizeHome: 32,
       ),
       backgroundColor: Theme.of(context).primaryColor,
       body: Stack(
@@ -242,116 +253,136 @@ class _DashState extends State<Dash> {
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(10))),
                               height: MediaQuery.of(context).size.height * 0.23,
-                              child: ListView.builder(
-                                //shrinkWrap: true,
-                                itemBuilder: (context, index) {
-                                  if (_taskList == null)
-                                    return Padding(
-                                      padding: EdgeInsets.only(
-                                              left: MediaQuery.of(context)
-                                                  .size
-                                                  .width) *
-                                          0.1,
-                                      child: Center(
-                                        child: AutoSizeText(
-                                            'You haven\'t added any task yet',
-                                            style: GoogleFonts.ubuntu(
-                                              fontSize: 20,
-                                            )),
-                                      ),
-                                    );
-                                  int _finished = 0, _due = 0;
-                                  if (_enrolDate == null || _taskList.isEmpty)
-                                    return Center(
-                                        child: CircularProgressIndicator());
-                                  DateTime _barDate = DateTime.parse(_enrolDate)
-                                      .add(Duration(days: index));
+                              child: (_enrolDate == null && _taskList.isEmpty)
+                                  ? Center(
+                                      child: AutoSizeText(
+                                          'You haven\'t added any task yet',
+                                          style: GoogleFonts.ubuntu(
+                                            fontSize: 20,
+                                            fontStyle: FontStyle.italic,
+                                            color: Colors.black54,
+                                          )))
+                                  //   CircularProgressIndicator(
+                                  //   valueColor: AlwaysStoppedAnimation<Color>(
+                                  //       Theme.of(context).primaryColor),
+                                  // ))
+                                  : ListView.builder(
+                                      //shrinkWrap: true,
+                                      itemBuilder: (context, index) {
+                                        if (_taskList == null)
+                                          return Padding(
+                                            padding: EdgeInsets.only(
+                                                    left: MediaQuery.of(context)
+                                                        .size
+                                                        .width) *
+                                                0.1,
+                                            child: Center(
+                                              child: AutoSizeText(
+                                                  'You haven\'t added any task yet',
+                                                  style: GoogleFonts.ubuntu(
+                                                    fontSize: 20,
+                                                  )),
+                                            ),
+                                          );
+                                        int _finished = 0, _due = 0;
 
-                                  String _showDateOnBar = DateFormat.MMMd()
-                                      .format(
-                                          DateTime.parse(_barDate.toString()));
+                                        DateTime _barDate =
+                                            DateTime.parse(_date)
+                                                .add(Duration(days: index));
 
-                                  String _showDayOnBar = DateFormat.E().format(
-                                      DateTime.parse(_barDate.toString()));
+                                        String _showDateOnBar =
+                                            DateFormat.MMMd().format(
+                                                DateTime.parse(
+                                                    _barDate.toString()));
 
-                                  String _compBarDate =
-                                      DateFormat('yyyy-MM-dd').format(_barDate);
+                                        String _showDayOnBar = DateFormat.E()
+                                            .format(DateTime.parse(
+                                                _barDate.toString()));
 
-                                  for (int i = 0; i < _taskList.length; i++) {
-                                    if (_compBarDate ==
-                                        _taskList[i].todoDueDate) _due++;
+                                        String _compBarDate =
+                                            DateFormat('yyyy-MM-dd')
+                                                .format(_barDate);
 
-                                    if (_compBarDate ==
-                                        _taskList[i]
-                                            .todoDueDate) if (_taskList[i]
-                                        .isFinished) _finished++;
-                                  }
-                                  int _total;
-                                  _due != 0
-                                      ? _total =
-                                          ((_finished / _due) * 100).ceil()
-                                      : _total = 0;
+                                        for (int i = 0;
+                                            i < _taskList.length;
+                                            i++) {
+                                          if (_compBarDate ==
+                                              _taskList[i].todoDueDate) _due++;
 
-                                  return Padding(
-                                    padding: const EdgeInsets.only(
-                                      right: 12.0,
-                                      left: 12.0,
-                                    ),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        RotatedBox(
-                                          quarterTurns: 3,
-                                          child: LinearPercentIndicator(
-                                            curve: Curves.easeIn,
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.18,
-                                            animation: true,
-                                            animationDuration: 2000,
-                                            lineHeight: 10.0,
-                                            percent: _total.isNaN
-                                                ? 0
-                                                : (_total / 100),
-                                            linearStrokeCap:
-                                                LinearStrokeCap.roundAll,
-                                            progressColor: !_total.isNaN
-                                                ? (_total <= 30)
-                                                    ? barColors['red']
-                                                    : (_total <= 50)
-                                                        ? barColors['yellow']
-                                                        : (_total <= 80)
-                                                            ? barColors[
-                                                                'yellowish']
-                                                            : (_total <= 99)
-                                                                ? barColors[
-                                                                    'greenish']
-                                                                : barColors[
-                                                                    'green']
-                                                : barColors['red'],
+                                          if (_compBarDate ==
+                                              _taskList[i]
+                                                  .todoDueDate) if (_taskList[i]
+                                              .isFinished) _finished++;
+                                        }
+                                        int _total;
+                                        _due != 0
+                                            ? _total =
+                                                ((_finished / _due) * 100)
+                                                    .ceil()
+                                            : _total = 0;
+
+                                        return Padding(
+                                          padding: const EdgeInsets.only(
+                                            right: 12.0,
+                                            left: 12.0,
                                           ),
-                                        ),
-                                        Text(
-                                          '$_showDayOnBar.',
-                                          style: GoogleFonts.ubuntu(
-                                              color: Theme.of(context)
-                                                  .primaryColor),
-                                        ),
-                                        Text(
-                                          '$_showDateOnBar.',
-                                          style: GoogleFonts.ubuntu(
-                                              color: Theme.of(context)
-                                                  .primaryColor),
-                                        ),
-                                      ],
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              RotatedBox(
+                                                quarterTurns: 3,
+                                                child: LinearPercentIndicator(
+                                                  curve: Curves.easeIn,
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .height *
+                                                      0.18,
+                                                  animation: true,
+                                                  animationDuration: 2000,
+                                                  lineHeight: 10.0,
+                                                  percent: _total.isNaN
+                                                      ? 0
+                                                      : (_total / 100),
+                                                  linearStrokeCap:
+                                                      LinearStrokeCap.roundAll,
+                                                  progressColor: !_total.isNaN
+                                                      ? (_total <= 30)
+                                                          ? barColors['red']
+                                                          : (_total <= 50)
+                                                              ? barColors[
+                                                                  'yellow']
+                                                              : (_total <= 80)
+                                                                  ? barColors[
+                                                                      'yellowish']
+                                                                  : (_total <=
+                                                                          99)
+                                                                      ? barColors[
+                                                                          'greenish']
+                                                                      : barColors[
+                                                                          'green']
+                                                      : barColors['red'],
+                                                ),
+                                              ),
+                                              Text(
+                                                '$_showDayOnBar.',
+                                                style: GoogleFonts.ubuntu(
+                                                    color: Theme.of(context)
+                                                        .primaryColor),
+                                              ),
+                                              Text(
+                                                '$_showDateOnBar.',
+                                                style: GoogleFonts.ubuntu(
+                                                    color: Theme.of(context)
+                                                        .primaryColor),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                      itemCount: _differenceInDate + 1,
+                                      scrollDirection: Axis.horizontal,
                                     ),
-                                  );
-                                },
-                                itemCount: _differenceInDate + 1,
-                                scrollDirection: Axis.horizontal,
-                              ),
                             ),
                             Divider(
                               height: 5,
@@ -383,10 +414,12 @@ class _DashState extends State<Dash> {
                               child: _pendingTask.isEmpty
                                   ? Center(
                                       child: Text(
-                                        'You do not have any pending task yet',
+                                        'You do not have any pending task yet.',
+                                        textAlign: TextAlign.center,
                                         style: GoogleFonts.ubuntu(
+                                          fontStyle: FontStyle.italic,
                                           fontSize: 20,
-                                          color: Colors.white,
+                                          color: Colors.white60,
                                         ),
                                       ),
                                     )
@@ -435,7 +468,7 @@ class _DashState extends State<Dash> {
                                               width: MediaQuery.of(context)
                                                       .size
                                                       .width *
-                                                  0.45,
+                                                  0.5,
                                               child: Padding(
                                                 padding:
                                                     const EdgeInsets.all(8.0),
@@ -729,8 +762,9 @@ class _DashState extends State<Dash> {
                                           child: Text(
                                             'There is no task due for today',
                                             style: GoogleFonts.ubuntu(
+                                              fontStyle: FontStyle.italic,
                                               fontSize: 20,
-                                              color: Colors.white,
+                                              color: Colors.white60,
                                             ),
                                           ),
                                         ),

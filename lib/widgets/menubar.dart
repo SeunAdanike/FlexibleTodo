@@ -13,11 +13,11 @@ class MenuBar extends StatefulWidget {
       this.isProfile = false,
       this.isSettings = false,
       this.isHome = false,
-      this.sizeMenu = 30,
-      this.sizeAddTask = 30,
-      this.sizeProfile = 30,
-      this.sizeSetting = 30,
-      this.sizeHome = 30});
+      this.sizeMenu = 28,
+      this.sizeAddTask = 28,
+      this.sizeProfile = 28,
+      this.sizeSetting = 28,
+      this.sizeHome = 28});
   @override
   _MenuBarState createState() => _MenuBarState();
 }
@@ -58,7 +58,7 @@ class _MenuBarState extends State<MenuBar> {
                     widget.sizeAddTask = widget.sizeHome =
                         widget.sizeProfile = widget.sizeSetting = 30.0;
                     widget.isMenu = true;
-                    widget.sizeMenu = 36;
+                    widget.sizeMenu = 32;
                   });
 
                   Scaffold.of(context).openDrawer();

@@ -293,7 +293,7 @@ class _AddTaskState extends State<AddTask> {
       drawer: AppDrawer(),
       extendBody: true,
       bottomNavigationBar: MenuBar(
-        sizeAddTask: 36,
+        sizeAddTask: 32,
         isAddTask: true,
       ),
       backgroundColor: Theme.of(context).primaryColor,
@@ -314,7 +314,7 @@ class _AddTaskState extends State<AddTask> {
                   Row(
                     children: [
                       CircleAvatar(
-                        radius: 50,
+                        radius: 40,
                         backgroundImage: AssetImage(
                           'assets/images/Foyeke.jpg',
                         ),
@@ -369,6 +369,7 @@ class _AddTaskState extends State<AddTask> {
                     height: 3,
                   ),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Column(
@@ -390,12 +391,12 @@ class _AddTaskState extends State<AddTask> {
                           ),
                         ],
                       ),
-                      SizedBox(
-                        width: 10,
-                      ),
+                      // SizedBox(
+                      //   width: 20,
+                      // ),
                       Container(
-                        width: MediaQuery.of(context).size.width * 0.69,
-                        height: MediaQuery.of(context).size.height * 0.2,
+                        width: MediaQuery.of(context).size.width * 0.62,
+                        height: MediaQuery.of(context).size.height * 0.17,
                         child: SvgPicture.asset(
                           'assets/images/Add task.svg',
                         ),
@@ -411,7 +412,7 @@ class _AddTaskState extends State<AddTask> {
                       decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.all(Radius.circular(10))),
-                      height: MediaQuery.of(context).size.height * 0.5,
+                      height: MediaQuery.of(context).size.height * 0.545,
                       child: Padding(
                         padding: const EdgeInsets.only(
                           right: 2.0,
@@ -454,7 +455,7 @@ class _AddTaskState extends State<AddTask> {
                                     ),
                                     Container(
                                       width: MediaQuery.of(context).size.width *
-                                          0.5,
+                                          0.6,
                                       child: DropdownButtonFormField(
                                         value: _categoriesHolder,
                                         items: CATEGORIES

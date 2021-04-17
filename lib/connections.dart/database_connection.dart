@@ -18,5 +18,7 @@ class DatabaseConnections {
         "CREATE TABLE TaskList(id INTEGER PRIMARY KEY, taskTitle TEXT, taskCategory TEXT, taskStartDate TEXT,  taskFinishedDate TEXT, taskProgressType TEXT, taskDueDate TEXT, taskRemainder TEXT, taskFinished TEXT, taskDescription TEXT)");
     await db.execute(
         "CREATE TABLE Measurables(id INTEGER PRIMARY KEY, measurable TEXT, isTicked TEXT)");
+    await db.execute(
+        "CREATE TABLE UserDetails(id INTEGER PRIMARY KEY, userName TEXT)");
   }
 }
