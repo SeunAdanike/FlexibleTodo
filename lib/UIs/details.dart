@@ -6,6 +6,7 @@ import 'package:flexibletodo/models/colors.dart';
 import 'package:flexibletodo/models/measurables.dart';
 import 'package:flexibletodo/models/task.dart';
 import 'package:flexibletodo/widgets/drawer.dart';
+import 'package:flexibletodo/main.dart';
 import 'package:flexibletodo/widgets/edgeDesign.dart';
 import 'package:flexibletodo/widgets/menubar.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +40,7 @@ class _TodoDetailsScreenState extends State<TodoDetailsScreen> {
   var _titleController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
-
+  List<Task> _taskList = List<Task>();
   DateTime pageGreet;
 
   int hour;
@@ -53,6 +54,101 @@ class _TodoDetailsScreenState extends State<TodoDetailsScreen> {
       content: message,
     );
     _scaffoldKey.currentState.showSnackBar(_snackBar);
+  }
+
+  void _getAllValues() async {
+    _taskList = List<Task>();
+    var tasks = await _databaseManager.getAllTask();
+    tasks.forEach((task) {
+      setState(() {
+        bool _isFinished;
+        task['taskFinished'].toLowerCase() == 'true'
+            ? _isFinished = true
+            : _isFinished = false;
+
+        Task taskModel = Task();
+        taskModel.id = task['id'];
+        taskModel.title = task['taskTitle'];
+        taskModel.category = task['taskCategory'];
+        taskModel.todoStartDate = task['taskStartDate'];
+        taskModel.todoFinishedDate = task['taskFinishedDate'];
+        taskModel.progressType = task['taskProgressType'];
+        taskModel.todoDueDate = task['taskDueDate'];
+        taskModel.reminder = task['taskRemainder'];
+        taskModel.description = task['taskDescription'];
+        taskModel.isFinished = _isFinished;
+        _taskList.add(taskModel);
+      });
+    });
+  }
+
+  _comfirmationDialog(BuildContext context, Task task) {
+    return showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (value) {
+        return AlertDialog(
+            actionsPadding: EdgeInsets.all(10),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20))),
+            title: Center(child: Text('Delete Confirmation')),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text('Are you sure you want to delete the task?',
+                    softWrap: true,
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.ubuntu(
+                      fontSize: 20,
+                      color: Colors.black,
+                    )),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    FlatButton(
+                      onPressed: () async {
+                        DateTime saveScheduleTime =
+                            DateTime.fromMillisecondsSinceEpoch(task.id);
+                        int scheduleId = (saveScheduleTime.weekday +
+                            saveScheduleTime.month +
+                            saveScheduleTime.millisecond +
+                            saveScheduleTime.year);
+                        var result = await _databaseManager.delete(task.id);
+                        await flutterLocalNotificationsPlugin
+                            .cancel(scheduleId);
+                        if (task.progressType == 'Gradual') {
+                          await _databaseManager.deleteMeasures(task.id);
+                        }
+                        if (result > 0) {
+                          _showSnackBar(Text('Task is successfully deleted'));
+                        }
+                        Navigator.pop(context);
+                        setState(() {
+                          _getAllValues();
+                        });
+                      },
+                      child: Text('Delete',
+                          style: GoogleFonts.ubuntu(
+                            fontSize: 18,
+                            color: Colors.red,
+                          )),
+                    ),
+                    FlatButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text('Cancel',
+                          style: GoogleFonts.ubuntu(
+                            fontSize: 18,
+                            color: Colors.black,
+                          )),
+                    ),
+                  ],
+                ),
+              ],
+            ));
+      },
+    );
   }
 
   _getMeasuresbyId() async {
@@ -846,7 +942,12 @@ class _TodoDetailsScreenState extends State<TodoDetailsScreen> {
                                       color: Theme.of(context).primaryColor,
                                     ),
                                     shape: StadiumBorder(),
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      _comfirmationDialog(context, _task)
+                                          .then((_) {
+                                        Navigator.of(context).pop();
+                                      });
+                                    },
                                     icon: Icon(
                                       Icons.delete_outline_outlined,
                                       color: Colors.red,

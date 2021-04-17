@@ -14,6 +14,33 @@ class Settings extends StatefulWidget {
 class _SettingsState extends State<Settings> {
   DateTime pageGreet;
 
+  _comfirmationDialog(BuildContext context,  task) {
+    return showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (value) {
+        return AlertDialog(
+            actionsPadding: EdgeInsets.all(10),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20))),
+            title: Center(child: Text('Delete Confirmation')),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text('Are you sure you want to delete the task?',
+                    softWrap: true,
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.ubuntu(
+                      fontSize: 20,
+                      color: Colors.black,
+                    )),
+              
+              ],
+            ));
+      },
+    );
+  }
+
   @override
   void initState() {
     pageGreet = DateTime.now();

@@ -1,8 +1,4 @@
-import 'package:flexibletodo/UIs/dashboard.dart';
-import 'package:flexibletodo/UIs/details.dart';
-import 'package:flexibletodo/UIs/login.dart';
-import 'package:flexibletodo/UIs/signup.dart';
-import 'package:flexibletodo/UIs/welcome.dart';
+import './UIs/dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
@@ -13,6 +9,7 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
+  
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -28,9 +25,8 @@ class MyApp extends StatelessWidget {
       home: Dash(),
       initialRoute: '/',
       routes: {
-        '/Login': (context) => Login(),
         '/Dash': (context) => Dash(),
-        '/Signup': (context) => SignUp()
+      
       },
     );
   }

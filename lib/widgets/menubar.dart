@@ -146,40 +146,6 @@ class _MenuBarState extends State<MenuBar> {
             children: [
               IconButton(
                 icon: Icon(
-                  Icons.person,
-                  size: widget.sizeProfile,
-                  color: widget.isProfile
-                      ? Theme.of(context).primaryColor
-                      : Theme.of(context).primaryColorLight,
-                ),
-                onPressed: () {
-                  setState(() {});
-
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => Settings(),
-                    ),
-                  );
-                },
-              ),
-              Text(
-                'Profile',
-                style: GoogleFonts.ubuntu(
-                  fontWeight:
-                      widget.isProfile ? FontWeight.bold : FontWeight.normal,
-                  color: widget.isProfile
-                      ? Theme.of(context).primaryColor
-                      : Theme.of(context).primaryColorLight,
-                  fontSize: widget.sizeProfile / 2,
-                ),
-              ),
-            ],
-          ),
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              IconButton(
-                icon: Icon(
                   Icons.settings,
                   size: widget.sizeSetting,
                   color: widget.isSettings

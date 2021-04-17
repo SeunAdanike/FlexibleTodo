@@ -297,623 +297,630 @@ class _AddTaskState extends State<AddTask> {
         isAddTask: true,
       ),
       backgroundColor: Theme.of(context).primaryColor,
-      body: Stack(
-        children: [
-          EdgeDesign(),
-          Padding(
-            padding: const EdgeInsets.only(
-              top: 30.0,
-              left: 15,
-              right: 0,
-              bottom: 30,
-            ),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 40,
-                        backgroundImage: AssetImage(
-                          'assets/images/Foyeke.jpg',
-                        ),
-                      ),
-                      SizedBox(
-                        width: 7,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                'Hello, ',
-                                style: GoogleFonts.ubuntu(
-                                  color: Colors.white,
-                                  fontSize: 28,
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: Stack(
+          children: [
+            EdgeDesign(),
+            Padding(
+              padding: const EdgeInsets.only(
+                top: 30.0,
+                left: 15,
+                right: 0,
+                bottom: 30,
+              ),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  ((hour >= 0 && hour <= 11) && minute <= 59)
+                                      ? 'Hello there!'
+                                      : ((hour > 11 && hour <= 16) &&
+                                              minute <= 59)
+                                          ? 'Hey there!'
+                                          : 'Hi there!',
+                                  style: GoogleFonts.ubuntu(
+                                    fontStyle: FontStyle.italic,
+                                    color: Colors.yellowAccent,
+                                    fontSize: 23,
+                                  ),
                                 ),
+                              ],
+                            ),
+                            Text(
+                              ((hour >= 0 && hour <= 11) && minute <= 59)
+                                  ? 'Good Morning!'
+                                  : ((hour > 11 && hour <= 16) && minute <= 59)
+                                      ? 'Good Afternoon!'
+                                      : 'Good Evening!',
+                              style: GoogleFonts.ubuntu(
+                                color: Colors.white,
+                                fontSize: 24,
                               ),
-                              Text(
-                                'Tito',
-                                style: GoogleFonts.ubuntu(
-                                  color: Colors.yellowAccent,
-                                  fontSize: 28,
-                                ),
+                            ),
+                            Text(
+                              '${DateFormat.yMMMMEEEEd().format(pageGreet)}',
+                              style: GoogleFonts.ubuntu(
+                                color: Colors.white,
+                                fontSize: 17,
                               ),
-                            ],
-                          ),
-                          Text(
-                            ((hour >= 0 && hour <= 11) && minute <= 59)
-                                ? 'Good Morning!'
-                                : ((hour > 11 && hour <= 16) && minute <= 59)
-                                    ? 'Good Afternoon!'
-                                    : 'Good Evening!',
-                            style: GoogleFonts.ubuntu(
-                              color: Colors.white,
-                              fontSize: 20,
                             ),
-                          ),
-                          Text(
-                            '${DateFormat.yMMMMEEEEd().format(pageGreet)}',
-                            style: GoogleFonts.ubuntu(
-                              color: Colors.white,
-                              fontSize: 17,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  Divider(
-                    height: 3,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(
-                            'Add a',
-                            style: GoogleFonts.ubuntu(
-                              color: Colors.white,
-                              fontSize: 22,
-                            ),
-                          ),
-                          Text(
-                            'New Task',
-                            style: GoogleFonts.ubuntu(
-                              color: Colors.white,
-                              fontSize: 22,
-                            ),
-                          ),
-                        ],
-                      ),
-                      // SizedBox(
-                      //   width: 20,
-                      // ),
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.62,
-                        height: MediaQuery.of(context).size.height * 0.17,
-                        child: SvgPicture.asset(
-                          'assets/images/Add task.svg',
+                          ],
                         ),
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      right: 18.0,
-                      top: 10.0,
+                      ],
                     ),
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
-                      height: MediaQuery.of(context).size.height * 0.545,
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                          right: 2.0,
-                        ),
-                        child: Scrollbar(
-                          radius: Radius.circular(20),
-                          isAlwaysShown: true,
-                          controller: _scrollBarController,
-                          child: SingleChildScrollView(
-                            controller: _scrollBarController,
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                right: 18.0,
-                                left: 18.0,
-                                bottom: 18,
+                    Divider(
+                      height: 3,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              'Add a',
+                              style: GoogleFonts.ubuntu(
+                                color: Colors.white,
+                                fontSize: 22,
                               ),
-                              child: Form(
-                                key: _formKey,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    TextFormField(
-                                      maxLength: 20,
-                                      controller: _titleController,
-                                      decoration: InputDecoration(
-                                        labelText: 'Enter Task Name',
-                                        labelStyle: GoogleFonts.ubuntu(
-                                          fontWeight: FontWeight.w400,
-                                          color: Colors.black,
-                                        ),
-                                        hintText:
-                                            'Place enter the name of the task',
-                                      ),
-                                      validator: (value) {
-                                        if (value.isEmpty) {
-                                          return 'Please Enter the Task Title';
-                                        }
-                                        return null;
-                                      },
-                                    ),
-                                    Container(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.6,
-                                      child: DropdownButtonFormField(
-                                        value: _categoriesHolder,
-                                        items: CATEGORIES
-                                            .map(
-                                              (label) => DropdownMenuItem(
-                                                child: Text(
-                                                  label.toString(),
-                                                ),
-                                                value: label,
-                                              ),
-                                            )
-                                            .toList(),
-                                        onChanged: (value) {
-                                          setState(() {
-                                            _categoriesHolder = value;
-                                          });
-                                        },
-                                        hint: Text(
-                                          'Select Task Category',
-                                          style: GoogleFonts.ubuntu(
+                            ),
+                            Text(
+                              'New Task',
+                              style: GoogleFonts.ubuntu(
+                                color: Colors.white,
+                                fontSize: 22,
+                              ),
+                            ),
+                          ],
+                        ),
+                        // SizedBox(
+                        //   width: 20,
+                        // ),
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.62,
+                          height: MediaQuery.of(context).size.height * 0.165,
+                          child: SvgPicture.asset(
+                            'assets/images/Add task.svg',
+                          ),
+                        ),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        right: 18.0,
+                        top: 10.0,
+                      ),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10))),
+                        height: MediaQuery.of(context).size.height * 0.56,
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            right: 2.0,
+                          ),
+                          child: Scrollbar(
+                            radius: Radius.circular(20),
+                            isAlwaysShown: true,
+                            controller: _scrollBarController,
+                            child: SingleChildScrollView(
+                              controller: _scrollBarController,
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                  right: 18.0,
+                                  left: 18.0,
+                                  bottom: 18,
+                                ),
+                                child: Form(
+                                  key: _formKey,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      TextFormField(
+                                        maxLength: 20,
+                                        controller: _titleController,
+                                        decoration: InputDecoration(
+                                          labelText: 'Enter Task Name',
+                                          labelStyle: GoogleFonts.ubuntu(
                                             fontWeight: FontWeight.w400,
                                             color: Colors.black,
                                           ),
+                                          hintText:
+                                              'Place enter the name of the task',
                                         ),
-                                        validator: (val) {
-                                          if (val == null) {
-                                            return 'Please Select a Category Text';
+                                        validator: (value) {
+                                          if (value.isEmpty) {
+                                            return 'Please Enter the Task Title';
                                           }
                                           return null;
                                         },
                                       ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 10.0),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          InkWell(
-                                            onTap: () {
-                                              _comfirmationDialog(context);
-                                            },
-                                            child: Row(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                Text(
-                                                  'Progress Type',
-                                                  style: GoogleFonts.ubuntu(
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      color: Colors.black,
-                                                      fontSize: 15),
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.6,
+                                        child: DropdownButtonFormField(
+                                          value: _categoriesHolder,
+                                          items: CATEGORIES
+                                              .map(
+                                                (label) => DropdownMenuItem(
+                                                  child: Text(
+                                                    label.toString(),
+                                                  ),
+                                                  value: label,
                                                 ),
-                                                SizedBox(
-                                                  width: 10,
-                                                ),
-                                                Icon(
-                                                  Icons.info_outline,
-                                                  color: Theme.of(context)
-                                                      .primaryColor,
-                                                ),
-                                              ],
+                                              )
+                                              .toList(),
+                                          onChanged: (value) {
+                                            setState(() {
+                                              _categoriesHolder = value;
+                                            });
+                                          },
+                                          hint: Text(
+                                            'Select Task Category',
+                                            style: GoogleFonts.ubuntu(
+                                              fontWeight: FontWeight.w400,
+                                              color: Colors.black,
                                             ),
                                           ),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              isGradual
-                                                  ? Row(
-                                                      children: [
-                                                        RaisedButton(
-                                                          color:
-                                                              Theme.of(context)
-                                                                  .primaryColor,
-                                                          shape:
-                                                              StadiumBorder(),
-                                                          onPressed: () {},
-                                                          child: Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .only(
-                                                                    left: 8.0,
-                                                                    right: 8),
-                                                            child: Text(
-                                                              'Gradual',
-                                                              style: GoogleFonts
-                                                                  .ubuntu(
-                                                                color: Colors
-                                                                    .white,
-                                                                fontSize: 16,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        Icon(
-                                                          Icons.check,
-                                                          size: 30,
-                                                          color:
-                                                              Theme.of(context)
-                                                                  .primaryColor,
-                                                        )
-                                                      ],
-                                                    )
-                                                  : OutlineButton(
-                                                      onPressed: () {
-                                                        setState(() {
-                                                          isGradual = true;
-                                                        });
-                                                      },
-                                                      child: Text(
-                                                        "Gradual",
-                                                        style: GoogleFonts.ubuntu(
-                                                            fontSize: 16,
-                                                            color: Theme.of(
-                                                                    context)
-                                                                .primaryColor),
-                                                      ),
-                                                      borderSide: BorderSide(
-                                                        color: Theme.of(context)
-                                                            .primaryColor,
-                                                      ),
-                                                      shape: StadiumBorder(),
-                                                    ),
-                                              SizedBox(
-                                                width: 40,
+                                          validator: (val) {
+                                            if (val == null) {
+                                              return 'Please Select a Category Text';
+                                            }
+                                            return null;
+                                          },
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(top: 10.0),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            InkWell(
+                                              onTap: () {
+                                                _comfirmationDialog(context);
+                                              },
+                                              child: Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    'Progress Type',
+                                                    style: GoogleFonts.ubuntu(
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                        color: Colors.black,
+                                                        fontSize: 15),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 10,
+                                                  ),
+                                                  Icon(
+                                                    Icons.info_outline,
+                                                    color: Theme.of(context)
+                                                        .primaryColor,
+                                                  ),
+                                                ],
                                               ),
-                                              isGradual
-                                                  ? OutlineButton(
-                                                      onPressed: () {
-                                                        setState(() {
-                                                          isGradual = false;
-                                                          _measurable = [];
-                                                        });
-                                                      },
-                                                      child: Text(
-                                                        "Definite",
-                                                        style: GoogleFonts.ubuntu(
-                                                            fontSize: 16,
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                isGradual
+                                                    ? Row(
+                                                        children: [
+                                                          RaisedButton(
                                                             color: Theme.of(
                                                                     context)
-                                                                .primaryColor),
-                                                      ),
-                                                      borderSide: BorderSide(
-                                                        color: Theme.of(context)
-                                                            .primaryColor,
-                                                      ),
-                                                      shape: StadiumBorder(),
-                                                    )
-                                                  : Row(
-                                                      children: [
-                                                        RaisedButton(
-                                                          color:
-                                                              Theme.of(context)
-                                                                  .primaryColor,
-                                                          shape:
-                                                              StadiumBorder(),
-                                                          onPressed: () {},
-                                                          child: Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .only(
-                                                                    left: 8.0,
-                                                                    right: 8),
-                                                            child: Text(
-                                                              'Definite',
-                                                              style: GoogleFonts
-                                                                  .ubuntu(
-                                                                color: Colors
-                                                                    .white,
-                                                                fontSize: 16,
+                                                                .primaryColor,
+                                                            shape:
+                                                                StadiumBorder(),
+                                                            onPressed: () {},
+                                                            child: Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .only(
+                                                                      left: 8.0,
+                                                                      right: 8),
+                                                              child: Text(
+                                                                'Gradual',
+                                                                style:
+                                                                    GoogleFonts
+                                                                        .ubuntu(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontSize: 16,
+                                                                ),
                                                               ),
                                                             ),
                                                           ),
+                                                          Icon(
+                                                            Icons.check,
+                                                            size: 30,
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .primaryColor,
+                                                          )
+                                                        ],
+                                                      )
+                                                    : OutlineButton(
+                                                        onPressed: () {
+                                                          setState(() {
+                                                            isGradual = true;
+                                                          });
+                                                        },
+                                                        child: Text(
+                                                          "Gradual",
+                                                          style: GoogleFonts.ubuntu(
+                                                              fontSize: 16,
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .primaryColor),
                                                         ),
-                                                        Icon(
-                                                          Icons.check,
-                                                          size: 30,
+                                                        borderSide: BorderSide(
                                                           color:
                                                               Theme.of(context)
                                                                   .primaryColor,
-                                                        )
-                                                      ],
-                                                    )
-                                            ],
+                                                        ),
+                                                        shape: StadiumBorder(),
+                                                      ),
+                                                SizedBox(
+                                                  width: 40,
+                                                ),
+                                                isGradual
+                                                    ? OutlineButton(
+                                                        onPressed: () {
+                                                          setState(() {
+                                                            isGradual = false;
+                                                            _measurable = [];
+                                                          });
+                                                        },
+                                                        child: Text(
+                                                          "Definite",
+                                                          style: GoogleFonts.ubuntu(
+                                                              fontSize: 16,
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .primaryColor),
+                                                        ),
+                                                        borderSide: BorderSide(
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .primaryColor,
+                                                        ),
+                                                        shape: StadiumBorder(),
+                                                      )
+                                                    : Row(
+                                                        children: [
+                                                          RaisedButton(
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .primaryColor,
+                                                            shape:
+                                                                StadiumBorder(),
+                                                            onPressed: () {},
+                                                            child: Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .only(
+                                                                      left: 8.0,
+                                                                      right: 8),
+                                                              child: Text(
+                                                                'Definite',
+                                                                style:
+                                                                    GoogleFonts
+                                                                        .ubuntu(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontSize: 16,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          Icon(
+                                                            Icons.check,
+                                                            size: 30,
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .primaryColor,
+                                                          )
+                                                        ],
+                                                      )
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            child: TextFormField(
+                                              readOnly: true,
+                                              controller: _dueDate,
+                                              decoration: InputDecoration(
+                                                hintText: 'YY-MM-DD',
+                                                labelText: 'Due Date',
+                                                suffixIcon: InkWell(
+                                                    onTap: () {
+                                                      _selectDueDate(context);
+                                                    },
+                                                    child: Icon(
+                                                        Icons.calendar_today)),
+                                                labelStyle: GoogleFonts.ubuntu(
+                                                  fontWeight: FontWeight.w400,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                              validator: (value) {
+                                                if (value.isEmpty) {
+                                                  return 'Please Enter the Due Date';
+                                                }
+                                                if (_combined
+                                                    .isBefore(DateTime.now())) {
+                                                  return 'Please pick a future time';
+                                                } else
+                                                  return null;
+                                              },
+                                            ),
                                           ),
+                                          SizedBox(
+                                            width: 20,
+                                          ),
+                                          Expanded(
+                                            child: TextFormField(
+                                              readOnly: true,
+                                              controller: _clockController,
+                                              decoration: InputDecoration(
+                                                hintText: '00:00',
+                                                labelText: 'Set Reminder',
+                                                suffixIcon: InkWell(
+                                                    onTap: () {
+                                                      _selectDueTime(context);
+                                                    },
+                                                    child: Icon(Icons
+                                                        .alarm_add_outlined)),
+                                                labelStyle: GoogleFonts.ubuntu(
+                                                  fontWeight: FontWeight.w400,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                              validator: (value) {
+                                                if (value.isEmpty) {
+                                                  return 'Please Pick a Time';
+                                                }
+                                                if (_combined
+                                                    .isBefore(DateTime.now())) {
+                                                  return 'Please pick a future time';
+                                                } else
+                                                  return null;
+                                              },
+                                            ),
+                                          )
                                         ],
                                       ),
-                                    ),
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: TextFormField(
-                                            readOnly: true,
-                                            controller: _dueDate,
-                                            decoration: InputDecoration(
-                                              hintText: 'YY-MM-DD',
-                                              labelText: 'Due Date',
-                                              suffixIcon: InkWell(
-                                                  onTap: () {
-                                                    _selectDueDate(context);
-                                                  },
-                                                  child: Icon(
-                                                      Icons.calendar_today)),
-                                              labelStyle: GoogleFonts.ubuntu(
-                                                fontWeight: FontWeight.w400,
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                            validator: (value) {
-                                              if (value.isEmpty) {
-                                                return 'Please Enter the Due Date';
-                                              }
-                                              if (_combined
-                                                  .isBefore(DateTime.now())) {
-                                                return 'Please pick a future time';
-                                              } else
-                                                return null;
-                                            },
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: 20,
-                                        ),
-                                        Expanded(
-                                          child: TextFormField(
-                                            readOnly: true,
-                                            controller: _clockController,
-                                            decoration: InputDecoration(
-                                              hintText: '00:00',
-                                              labelText: 'Set Reminder',
-                                              suffixIcon: InkWell(
-                                                  onTap: () {
-                                                    _selectDueTime(context);
-                                                  },
-                                                  child: Icon(Icons
-                                                      .alarm_add_outlined)),
-                                              labelStyle: GoogleFonts.ubuntu(
-                                                fontWeight: FontWeight.w400,
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                            validator: (value) {
-                                              if (value.isEmpty) {
-                                                return 'Please Pick a Time';
-                                              }
-                                              if (_combined
-                                                  .isBefore(DateTime.now())) {
-                                                return 'Please pick a future time';
-                                              } else
-                                                return null;
-                                            },
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                    TextFormField(
-                                      keyboardType: TextInputType.multiline,
-                                      maxLines: null,
-                                      controller: _descriptionController,
-                                      decoration: InputDecoration(
-                                        hintText:
-                                            'Please Enter the detailed task description',
-                                        labelText: 'Task Description',
-                                        labelStyle: GoogleFonts.ubuntu(
-                                          fontWeight: FontWeight.w400,
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                      validator: (value) {
-                                        if (value.isEmpty) {
-                                          return 'Please Enter the Task Description';
-                                        }
-
-                                        return null;
-                                      },
-                                    ),
-                                    if (_measurable.isNotEmpty)
-                                      ListView.builder(
-                                        padding: EdgeInsets.only(
-                                          top: 10,
-                                        ),
-                                        shrinkWrap: true,
-                                        itemBuilder: (context, index) {
-                                          return Padding(
-                                            padding: const EdgeInsets.only(
-                                                bottom: 8.0),
-                                            child: Row(
-                                              children: [
-                                                Text(
-                                                  '${index + 1}',
-                                                  style: GoogleFonts.ubuntu(
-                                                      fontSize: 18),
-                                                ),
-                                                SizedBox(
-                                                  width: 20,
-                                                ),
-                                                Flexible(
-                                                  child: Text(
-                                                    _measurable[index],
-                                                    style: GoogleFonts.ubuntu(
-                                                        fontSize: 18),
-                                                    softWrap: true,
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  width: 20,
-                                                ),
-                                                InkWell(
-                                                  onTap: () {
-                                                    setState(() {
-                                                      _measurable
-                                                          .removeAt(index);
-                                                    });
-                                                  },
-                                                  child: Icon(
-                                                    Icons.delete,
-                                                    color: Colors.red,
-                                                  ),
-                                                )
-                                              ],
-                                            ),
-                                          );
-                                        },
-                                        itemCount: _measurable.length,
-                                      ),
-                                    if (isGradual)
                                       TextFormField(
                                         keyboardType: TextInputType.multiline,
                                         maxLines: null,
-                                        controller: _measurableController,
+                                        controller: _descriptionController,
                                         decoration: InputDecoration(
-                                          suffixIcon: InkWell(
-                                            onTap: () {
-                                              setState(() {
-                                                if (_measurableController
-                                                    .text.isNotEmpty) {
-                                                  _measurable.add(
-                                                      _measurableController
-                                                          .text);
-                                                  _measurableController.clear();
-                                                  _formKey.currentState
-                                                      .validate();
-                                                }
-                                              });
-                                            },
-                                            child: Icon(
-                                              Icons.add,
-                                              color: Theme.of(context)
-                                                  .primaryColor,
-                                            ),
-                                          ),
-                                          hintText: 'Please Enter Measurables',
-                                          labelText: 'Measurables',
+                                          hintText:
+                                              'Please Enter the detailed task description',
+                                          labelText: 'Task Description',
                                           labelStyle: GoogleFonts.ubuntu(
                                             fontWeight: FontWeight.w400,
                                             color: Colors.black,
                                           ),
                                         ),
-                                        validator: (_) {
-                                          if (_measurable.isEmpty) {
-                                            return 'Please Enter Task Measurables';
+                                        validator: (value) {
+                                          if (value.isEmpty) {
+                                            return 'Please Enter the Task Description';
                                           }
+
                                           return null;
                                         },
                                       ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                        top: 28.0,
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceAround,
-                                        children: [
-                                          RaisedButton(
-                                            color:
-                                                Theme.of(context).primaryColor,
-                                            shape: StadiumBorder(),
-                                            onPressed: () async {
-                                              _combined = DateTime(
-                                                _date.year,
-                                                _date.month,
-                                                _date.day,
-                                                _selectedTime.hour,
-                                                _selectedTime.minute,
-                                              );
-                                              scheduleSec = _combined
-                                                  .difference(DateTime.now())
-                                                  .inSeconds;
-                                              if (_formKey.currentState
-                                                  .validate()) {
-                                                _addTasktoDb();
-
-                                                await _setRemainder(newTask);
-
-                                                var addingTask =
-                                                    await _databaseManager
-                                                        .saveTask(
-                                                            newTask.taskMap());
-
-                                                if (isGradual)
-                                                  await _databaseManager
-                                                      .saveMeasurables(
-                                                          newMeasurables
-                                                              .toMap());
-
-                                                if (addingTask > 0) {
-                                                  _showSnackBar(Text(
-                                                    'Todo is inserted successfully',
-                                                    style: GoogleFonts.ubuntu(
-                                                      color: Colors.white,
-                                                      fontSize: 16,
-                                                    ),
-                                                  ));
-                                                }
-
-                                                _clearFields();
-                                              }
-                                            },
-                                            child: Padding(
+                                      if (_measurable.isNotEmpty)
+                                        ListView.builder(
+                                          padding: EdgeInsets.only(
+                                            top: 10,
+                                          ),
+                                          shrinkWrap: true,
+                                          itemBuilder: (context, index) {
+                                            return Padding(
                                               padding: const EdgeInsets.only(
-                                                  left: 8.0, right: 8),
-                                              child: Text(
-                                                'Save',
-                                                style: GoogleFonts.ubuntu(
-                                                  color: Colors.white,
-                                                  fontSize: 16,
+                                                  bottom: 8.0),
+                                              child: Row(
+                                                children: [
+                                                  Text(
+                                                    '${index + 1}',
+                                                    style: GoogleFonts.ubuntu(
+                                                        fontSize: 18),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 20,
+                                                  ),
+                                                  Flexible(
+                                                    child: Text(
+                                                      _measurable[index],
+                                                      style: GoogleFonts.ubuntu(
+                                                          fontSize: 18),
+                                                      softWrap: true,
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 20,
+                                                  ),
+                                                  InkWell(
+                                                    onTap: () {
+                                                      setState(() {
+                                                        _measurable
+                                                            .removeAt(index);
+                                                      });
+                                                    },
+                                                    child: Icon(
+                                                      Icons.delete,
+                                                      color: Colors.red,
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            );
+                                          },
+                                          itemCount: _measurable.length,
+                                        ),
+                                      if (isGradual)
+                                        TextFormField(
+                                          keyboardType: TextInputType.multiline,
+                                          maxLines: null,
+                                          controller: _measurableController,
+                                          decoration: InputDecoration(
+                                            suffixIcon: InkWell(
+                                              onTap: () {
+                                                setState(() {
+                                                  if (_measurableController
+                                                      .text.isNotEmpty) {
+                                                    _measurable.add(
+                                                        _measurableController
+                                                            .text);
+                                                    _measurableController
+                                                        .clear();
+                                                    _formKey.currentState
+                                                        .validate();
+                                                  }
+                                                });
+                                              },
+                                              child: Icon(
+                                                Icons.add,
+                                                color: Theme.of(context)
+                                                    .primaryColor,
+                                              ),
+                                            ),
+                                            hintText:
+                                                'Please Enter Measurables',
+                                            labelText: 'Measurables',
+                                            labelStyle: GoogleFonts.ubuntu(
+                                              fontWeight: FontWeight.w400,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                          validator: (_) {
+                                            if (_measurable.isEmpty) {
+                                              return 'Please Enter Task Measurables';
+                                            }
+                                            return null;
+                                          },
+                                        ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                          top: 28.0,
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceAround,
+                                          children: [
+                                            RaisedButton(
+                                              color: Theme.of(context)
+                                                  .primaryColor,
+                                              shape: StadiumBorder(),
+                                              onPressed: () async {
+                                                _combined = DateTime(
+                                                  _date.year,
+                                                  _date.month,
+                                                  _date.day,
+                                                  _selectedTime.hour,
+                                                  _selectedTime.minute,
+                                                );
+                                                scheduleSec = _combined
+                                                    .difference(DateTime.now())
+                                                    .inSeconds;
+                                                if (_formKey.currentState
+                                                    .validate()) {
+                                                  _addTasktoDb();
+
+                                                  await _setRemainder(newTask);
+
+                                                  var addingTask =
+                                                      await _databaseManager
+                                                          .saveTask(newTask
+                                                              .taskMap());
+
+                                                  if (isGradual)
+                                                    await _databaseManager
+                                                        .saveMeasurables(
+                                                            newMeasurables
+                                                                .toMap());
+
+                                                  if (addingTask > 0) {
+                                                    _showSnackBar(Text(
+                                                      'Todo is inserted successfully',
+                                                      style: GoogleFonts.ubuntu(
+                                                        color: Colors.white,
+                                                        fontSize: 16,
+                                                      ),
+                                                    ));
+                                                  }
+
+                                                  _clearFields();
+                                                }
+                                              },
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 8.0, right: 8),
+                                                child: Text(
+                                                  'Save',
+                                                  style: GoogleFonts.ubuntu(
+                                                    color: Colors.white,
+                                                    fontSize: 16,
+                                                  ),
                                                 ),
                                               ),
                                             ),
-                                          ),
-                                          OutlineButton(
-                                            onPressed: () async {
-                                              var todos = await _databaseManager
-                                                  .getAllTask();
-                                              print(todos);
-                                              _clearFields();
-                                              _formKey.currentState.reset();
-                                            },
-                                            child: Text(
-                                              "Clear",
-                                              style: GoogleFonts.ubuntu(
-                                                  fontSize: 16,
-                                                  color: Theme.of(context)
-                                                      .primaryColor),
+                                            OutlineButton(
+                                              onPressed: () async {
+                                                var todos =
+                                                    await _databaseManager
+                                                        .getAllTask();
+                                                print(todos);
+                                                _clearFields();
+                                                _formKey.currentState.reset();
+                                              },
+                                              child: Text(
+                                                "Clear",
+                                                style: GoogleFonts.ubuntu(
+                                                    fontSize: 16,
+                                                    color: Theme.of(context)
+                                                        .primaryColor),
+                                              ),
+                                              borderSide: BorderSide(
+                                                color: Theme.of(context)
+                                                    .primaryColor,
+                                              ),
+                                              shape: StadiumBorder(),
                                             ),
-                                            borderSide: BorderSide(
-                                              color: Theme.of(context)
-                                                  .primaryColor,
-                                            ),
-                                            shape: StadiumBorder(),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -921,12 +928,12 @@ class _AddTaskState extends State<AddTask> {
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

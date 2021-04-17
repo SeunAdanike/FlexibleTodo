@@ -2,12 +2,13 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flexibletodo/UIs/allTask.dart';
 import 'package:flexibletodo/UIs/categories.dart';
 import 'package:flexibletodo/UIs/filterScreen.dart';
-import 'package:flexibletodo/UIs/login.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppDrawer extends StatelessWidget {
   @override
+  int hour = DateTime.now().hour;
+  int minute = DateTime.now().minute;
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.topCenter,
@@ -17,7 +18,7 @@ class AppDrawer extends StatelessWidget {
           topRight: Radius.circular(100),
         ),
       ),
-      width: MediaQuery.of(context).size.width * 0.65,
+      width: MediaQuery.of(context).size.width * 0.6,
       height: MediaQuery.of(context).size.height,
       child: Padding(
         padding: const EdgeInsets.only(
@@ -26,157 +27,133 @@ class AppDrawer extends StatelessWidget {
           right: 10,
           bottom: 18,
         ),
-        child: Column(
-          children: [
-            CircleAvatar(
-              radius: 100,
-              backgroundImage: AssetImage(
-                'assets/images/Foyeke.jpg',
-              ),
-            ),
-            Divider(),
-            Text(
-              'Hello!',
-              style: GoogleFonts.ubuntu(
-                color: Colors.white,
-                fontSize: 21,
-              ),
-            ),
-            AutoSizeText(
-              'Tito Funmi',
-              style: GoogleFonts.ubuntu(
-                color: Color(0xFFFFEA32),
-                fontSize: 35,
-              ),
-              maxLines: 1,
-            ),
-            Divider(
-              thickness: 2,
-              color: Colors.white,
-            ),
-            ListTile(
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => Categories(),
-                  ),
-                );
-              },
-              leading: Icon(
-                Icons.category_sharp,
-                color: Color(0xFF61F4E8),
-              ),
-              title: Text(
-                'Categories',
-                style: GoogleFonts.ubuntu(
-                  color: Colors.white,
-                  fontSize: 21,
-                ),
-              ),
-            ),
-            ListTile(
-              onTap: () {},
-              leading: Icon(
-                Icons.online_prediction,
-                color: Color(0xFF61F4E8),
-              ),
-              title: Text(
-                'Sync Online',
-                style: GoogleFonts.ubuntu(
-                  color: Colors.white,
-                  fontSize: 21,
-                ),
-              ),
-            ),
-            ListTile(
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => FilterHelper(
-                      field: 'Completed',
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Divider(),
+              Column(
+                children: [
+                  Text(
+                    'Hello!',
+                    style: GoogleFonts.ubuntu(
+                      color: Colors.white,
+                      fontSize: 25,
                     ),
                   ),
-                );
-              },
-              leading: Icon(
-                Icons.check_circle_outline,
-                color: Color(0xFF61F4E8),
-              ),
-              title: AutoSizeText(
-                'Completed Tasks',
-                style: GoogleFonts.ubuntu(
-                  color: Colors.white,
-                  fontSize: 21,
-                ),
-                maxLines: 1,
-              ),
-            ),
-            ListTile(
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => FilterHelper(
-                      field: 'Pending',
+                  Text(
+                    ((hour >= 0 && hour <= 11) && minute <= 59)
+                        ? 'Good Morning!'
+                        : ((hour > 11 && hour <= 16) && minute <= 59)
+                            ? 'Good Afternoon!'
+                            : 'Good Evening!',
+                    style: GoogleFonts.ubuntu(
+                      fontStyle: FontStyle.italic,
+                      color: Colors.yellowAccent,
+                      fontSize: 30,
                     ),
                   ),
-                );
-              },
-              leading: Icon(
-                Icons.pending_actions_outlined,
-                color: Color(0xFF61F4E8),
-              ),
-              title: AutoSizeText(
-                'Pending Tasks',
-                style: GoogleFonts.ubuntu(
-                  color: Colors.white,
-                  fontSize: 21,
-                ),
-                maxLines: 1,
-              ),
-            ),
-            ListTile(
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => AllTask(),
+                  Divider(
+                    thickness: 2,
+                    color: Colors.white,
                   ),
-                );
-              },
-              leading: Icon(
-                Icons.all_inbox_outlined,
-                color: Color(0xFF61F4E8),
+                ],
               ),
-              title: AutoSizeText(
-                'View All Tasks',
-                style: GoogleFonts.ubuntu(
-                  color: Colors.white,
-                  fontSize: 21,
+              ListTile(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => Categories(),
+                    ),
+                  );
+                },
+                leading: Icon(
+                  Icons.category_sharp,
+                  color: Color(0xFF61F4E8),
                 ),
-                maxLines: 1,
-              ),
-            ),
-            ListTile(
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => Login(),
+                title: Text(
+                  'Categories',
+                  style: GoogleFonts.ubuntu(
+                    color: Colors.white,
+                    fontSize: 21,
                   ),
-                );
-              },
-              leading: Icon(
-                Icons.logout,
-                color: Color(0xFF61F4E8),
-              ),
-              title: AutoSizeText(
-                'Log Out',
-                style: GoogleFonts.ubuntu(
-                  color: Colors.white,
-                  fontSize: 21,
                 ),
-                maxLines: 1,
               ),
-            ),
-          ],
+              Divider(),
+              ListTile(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => FilterHelper(
+                        field: 'Completed',
+                      ),
+                    ),
+                  );
+                },
+                leading: Icon(
+                  Icons.check_circle_outline,
+                  color: Color(0xFF61F4E8),
+                ),
+                title: AutoSizeText(
+                  'Completed Tasks',
+                  style: GoogleFonts.ubuntu(
+                    color: Colors.white,
+                    fontSize: 21,
+                  ),
+                  maxLines: 1,
+                ),
+              ),
+              Divider(),
+              ListTile(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => FilterHelper(
+                        field: 'Pending',
+                      ),
+                    ),
+                  );
+                },
+                leading: Icon(
+                  Icons.pending_actions_outlined,
+                  color: Color(0xFF61F4E8),
+                ),
+                title: AutoSizeText(
+                  'Pending Tasks',
+                  style: GoogleFonts.ubuntu(
+                    color: Colors.white,
+                    fontSize: 21,
+                  ),
+                  maxLines: 1,
+                ),
+              ),
+              Divider(),
+              ListTile(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => AllTask(),
+                    ),
+                  );
+                },
+                leading: Icon(
+                  Icons.all_inbox_outlined,
+                  color: Color(0xFF61F4E8),
+                ),
+                title: AutoSizeText(
+                  'View All Tasks',
+                  style: GoogleFonts.ubuntu(
+                    color: Colors.white,
+                    fontSize: 21,
+                  ),
+                  maxLines: 1,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

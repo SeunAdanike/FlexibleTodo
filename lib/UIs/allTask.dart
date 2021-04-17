@@ -166,12 +166,6 @@ class _AllTaskState extends State<AllTask> {
               children: [
                 Row(
                   children: [
-                    CircleAvatar(
-                      radius: 50,
-                      backgroundImage: AssetImage(
-                        'assets/images/Foyeke.jpg',
-                      ),
-                    ),
                     SizedBox(
                       width: 7,
                     ),
@@ -181,17 +175,15 @@ class _AllTaskState extends State<AllTask> {
                         Row(
                           children: [
                             Text(
-                              'Hello, ',
+                              ((hour >= 0 && hour <= 11) && minute <= 59)
+                                  ? 'Hello there!'
+                                  : ((hour > 11 && hour <= 16) && minute <= 59)
+                                      ? 'Hey there!'
+                                      : 'Hi there!',
                               style: GoogleFonts.ubuntu(
-                                color: Colors.white,
-                                fontSize: 28,
-                              ),
-                            ),
-                            Text(
-                              'Tito',
-                              style: GoogleFonts.ubuntu(
+                                fontStyle: FontStyle.italic,
                                 color: Colors.yellowAccent,
-                                fontSize: 28,
+                                fontSize: 23,
                               ),
                             ),
                           ],
@@ -204,7 +196,7 @@ class _AllTaskState extends State<AllTask> {
                                   : 'Good Evening!',
                           style: GoogleFonts.ubuntu(
                             color: Colors.white,
-                            fontSize: 20,
+                            fontSize: 24,
                           ),
                         ),
                         Text(

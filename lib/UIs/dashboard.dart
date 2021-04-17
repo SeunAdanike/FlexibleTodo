@@ -168,35 +168,23 @@ class _DashState extends State<Dash> {
               children: [
                 Row(
                   children: [
-                    CircleAvatar(
-                      radius: 50,
-                      backgroundImage: AssetImage(
-                        'assets/images/Foyeke.jpg',
-                      ),
-                    ),
                     SizedBox(
                       width: 7,
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          children: [
-                            Text(
-                              'Hello, ',
-                              style: GoogleFonts.ubuntu(
-                                color: Colors.white,
-                                fontSize: 28,
-                              ),
-                            ),
-                            Text(
-                              'Tito',
-                              style: GoogleFonts.ubuntu(
-                                color: Colors.yellowAccent,
-                                fontSize: 28,
-                              ),
-                            ),
-                          ],
+                        Text(
+                          ((hour >= 0 && hour <= 11) && minute <= 59)
+                              ? 'Hello there!'
+                              : ((hour > 11 && hour <= 16) && minute <= 59)
+                                  ? 'Hey there!'
+                                  : 'Hi there!',
+                          style: GoogleFonts.ubuntu(
+                            fontStyle: FontStyle.italic,
+                            color: Colors.yellowAccent,
+                            fontSize: 23,
+                          ),
                         ),
                         Text(
                           ((hour >= 0 && hour <= 11) && minute <= 59)
@@ -206,7 +194,7 @@ class _DashState extends State<Dash> {
                                   : 'Good Evening!',
                           style: GoogleFonts.ubuntu(
                             color: Colors.white,
-                            fontSize: 20,
+                            fontSize: 24,
                           ),
                         ),
                         Text(
