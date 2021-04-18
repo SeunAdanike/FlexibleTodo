@@ -10,6 +10,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 class FilterHelper extends StatefulWidget {
+  static const String routeName = '/Filter';
   final String field;
   FilterHelper({@required this.field});
   @override

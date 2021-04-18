@@ -385,9 +385,6 @@ class _AddTaskState extends State<AddTask> {
                             ),
                           ],
                         ),
-                        // SizedBox(
-                        //   width: 20,
-                        // ),
                         Container(
                           width: MediaQuery.of(context).size.width * 0.62,
                           height: MediaQuery.of(context).size.height * 0.165,
@@ -450,9 +447,10 @@ class _AddTaskState extends State<AddTask> {
                                         },
                                       ),
                                       Container(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.6,
+                                        width: MediaQuery.of(context)
+                                                .size
+                                                .width *
+                                            0.6,
                                         child: DropdownButtonFormField(
                                           value: _categoriesHolder,
                                           items: CATEGORIES
@@ -467,6 +465,8 @@ class _AddTaskState extends State<AddTask> {
                                               .toList(),
                                           onChanged: (value) {
                                             setState(() {
+                                              FocusScope.of(context)
+                                                  .unfocus();
                                               _categoriesHolder = value;
                                             });
                                           },
@@ -565,6 +565,9 @@ class _AddTaskState extends State<AddTask> {
                                                     : OutlineButton(
                                                         onPressed: () {
                                                           setState(() {
+                                                            FocusScope.of(
+                                                                    context)
+                                                                .unfocus();
                                                             isGradual = true;
                                                           });
                                                         },
@@ -590,6 +593,9 @@ class _AddTaskState extends State<AddTask> {
                                                     ? OutlineButton(
                                                         onPressed: () {
                                                           setState(() {
+                                                            FocusScope.of(
+                                                                    context)
+                                                                .unfocus();
                                                             isGradual = false;
                                                             _measurable = [];
                                                           });

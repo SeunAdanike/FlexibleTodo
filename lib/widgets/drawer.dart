@@ -18,7 +18,7 @@ class AppDrawer extends StatelessWidget {
           topRight: Radius.circular(100),
         ),
       ),
-      width: MediaQuery.of(context).size.width * 0.6,
+      width: MediaQuery.of(context).size.width * 0.65,
       height: MediaQuery.of(context).size.height,
       child: Padding(
         padding: const EdgeInsets.only(

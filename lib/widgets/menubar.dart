@@ -89,7 +89,7 @@ class _MenuBarState extends State<MenuBar> {
                       : Theme.of(context).primaryColorLight,
                 ),
                 onPressed: () {
-                  Navigator.of(context).push(
+                  Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
                       builder: (context) => Dash(),
                     ),
@@ -121,7 +121,7 @@ class _MenuBarState extends State<MenuBar> {
                       : Theme.of(context).primaryColorLight,
                 ),
                 onPressed: () {
-                  Navigator.of(context).push(
+                  Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
                       builder: (context) => AddTask(),
                     ),
